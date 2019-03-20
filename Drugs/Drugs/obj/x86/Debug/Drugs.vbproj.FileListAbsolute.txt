@@ -1,0 +1,9 @@
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Debug\Drugs.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Debug\Drugs.pdb
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Debug\Drugs.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.Form1.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.Resources.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.vbproj.GenerateResource.Cache
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Debug\Drugs.pdb

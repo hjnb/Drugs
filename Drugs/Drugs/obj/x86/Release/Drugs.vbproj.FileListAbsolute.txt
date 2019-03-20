@@ -1,0 +1,20 @@
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.vbproj.ResolveComReference.cache
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Release\Drugs.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Release\Drugs.pdb
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\bin\Release\Drugs.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.TopForm.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.Resources.resources
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.vbproj.GenerateResource.Cache
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.exe
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.xml
+C:\Users\yoshi\AppData\Local\Temporary Projects\Drugs\obj\x86\Release\Drugs.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.vbproj.ResolveComReference.cache
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.exe
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.xml
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\bin\Release\Drugs.exe
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\bin\Release\Drugs.pdb
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\bin\Release\Drugs.xml
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.TopForm.resources
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.Resources.resources
+C:\Users\yoshi\documents\visual studio 2010\Projects\Drugs\Drugs\obj\x86\Release\Drugs.vbproj.GenerateResource.Cache
