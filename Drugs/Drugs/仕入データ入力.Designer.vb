@@ -22,7 +22,9 @@ Partial Class 仕入データ入力
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.GroupBox = New System.Windows.Forms.GroupBox()
+        Me.taxBox = New System.Windows.Forms.ComboBox()
         Me.tankaBox = New System.Windows.Forms.TextBox()
         Me.suryoBox = New System.Windows.Forms.TextBox()
         Me.namBox = New System.Windows.Forms.TextBox()
@@ -38,13 +40,12 @@ Partial Class 仕入データ入力
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.taxBox = New System.Windows.Forms.ComboBox()
         Me.btnAdd = New System.Windows.Forms.Button()
         Me.btnChange = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
         Me.btnPrint = New System.Windows.Forms.Button()
         Me.dgvSearch = New System.Windows.Forms.DataGridView()
-        Me.dgvSiire = New System.Windows.Forms.DataGridView()
+        Me.dgvSiire = New Drugs.SiireDataGridView(Me.components)
         Me.GroupBox.SuspendLayout()
         CType(Me.dgvSearch, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvSiire, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -74,6 +75,15 @@ Partial Class 仕入データ入力
         Me.GroupBox.TabIndex = 1
         Me.GroupBox.TabStop = False
         '
+        'taxBox
+        '
+        Me.taxBox.Font = New System.Drawing.Font("MS UI Gothic", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.taxBox.FormattingEnabled = True
+        Me.taxBox.Location = New System.Drawing.Point(289, 18)
+        Me.taxBox.Name = "taxBox"
+        Me.taxBox.Size = New System.Drawing.Size(67, 20)
+        Me.taxBox.TabIndex = 14
+        '
         'tankaBox
         '
         Me.tankaBox.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
@@ -95,7 +105,7 @@ Partial Class 仕入データ入力
         Me.namBox.Font = New System.Drawing.Font("MS UI Gothic", 11.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.namBox.Location = New System.Drawing.Point(83, 134)
         Me.namBox.Name = "namBox"
-        Me.namBox.Size = New System.Drawing.Size(290, 22)
+        Me.namBox.Size = New System.Drawing.Size(304, 22)
         Me.namBox.TabIndex = 12
         '
         'codBox
@@ -208,14 +218,6 @@ Partial Class 仕入データ入力
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "日付"
         '
-        'taxBox
-        '
-        Me.taxBox.FormattingEnabled = True
-        Me.taxBox.Location = New System.Drawing.Point(289, 18)
-        Me.taxBox.Name = "taxBox"
-        Me.taxBox.Size = New System.Drawing.Size(71, 20)
-        Me.taxBox.TabIndex = 14
-        '
         'btnAdd
         '
         Me.btnAdd.Location = New System.Drawing.Point(466, 208)
@@ -264,17 +266,17 @@ Partial Class 仕入データ入力
         'dgvSiire
         '
         Me.dgvSiire.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSiire.Location = New System.Drawing.Point(18, 283)
+        Me.dgvSiire.Location = New System.Drawing.Point(18, 277)
         Me.dgvSiire.Name = "dgvSiire"
         Me.dgvSiire.RowTemplate.Height = 21
-        Me.dgvSiire.Size = New System.Drawing.Size(975, 377)
+        Me.dgvSiire.Size = New System.Drawing.Size(975, 385)
         Me.dgvSiire.TabIndex = 7
         '
         '仕入データ入力
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1050, 690)
+        Me.ClientSize = New System.Drawing.Size(1050, 697)
         Me.Controls.Add(Me.dgvSiire)
         Me.Controls.Add(Me.dgvSearch)
         Me.Controls.Add(Me.btnPrint)
@@ -313,5 +315,5 @@ Partial Class 仕入データ入力
     Friend WithEvents btnDelete As System.Windows.Forms.Button
     Friend WithEvents btnPrint As System.Windows.Forms.Button
     Friend WithEvents dgvSearch As System.Windows.Forms.DataGridView
-    Friend WithEvents dgvSiire As System.Windows.Forms.DataGridView
+    Friend WithEvents dgvSiire As Drugs.SiireDataGridView
 End Class
