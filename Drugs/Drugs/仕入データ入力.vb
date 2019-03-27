@@ -214,6 +214,7 @@ Public Class 仕入データ入力
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 .SortMode = DataGridViewColumnSortMode.NotSortable
                 .Width = 70
+                .DefaultCellStyle.Format = "#,0"
             End With
         End With
     End Sub
@@ -236,6 +237,9 @@ Public Class 仕入データ入力
         da.Fill(ds, rs, "Siire")
         dgvSiire.DataSource = ds.Tables("Siire")
         cnn.Close()
+
+        '行数
+        Dim rowCount As Integer = dgvSiire.Rows.Count
 
         '幅設定等
         With dgvSiire
@@ -303,7 +307,11 @@ Public Class 仕入データ入力
                 .HeaderText = "合計"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 .SortMode = DataGridViewColumnSortMode.NotSortable
-                .Width = 75
+                If rowCount > 20 Then
+                    .Width = 75
+                Else
+                    .Width = 92
+                End If
                 .DefaultCellStyle.Format = "#,0"
             End With
         End With
@@ -348,6 +356,25 @@ Public Class 仕入データ入力
     Private Sub YmdBox_keyDownEnterOrDown(sender As Object, e As System.EventArgs) Handles YmdBox.keyDownEnterOrDown
         Dim ymd As String = YmdBox.getADStr()
         displayDgvSiire(ymd)
+    End Sub
+
+    ''' <summary>
+    ''' データグリッドビュー（右上）セルマウスクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSearch_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles dgvSearch.CellMouseClick
+        If e.RowIndex >= 0 Then
+            Dim cod As String = Util.checkDBNullValue(dgvSearch("Cod", e.RowIndex).Value) 'カナ
+            Dim nam As String = Util.checkDBNullValue(dgvSearch("Nam", e.RowIndex).Value) '品名
+            Dim tanka As String = Util.checkDBNullValue(dgvSearch("Tanka", e.RowIndex).FormattedValue) '単価
+
+            '各ボックスへセット
+            codBox.Text = cod
+            namBox.Text = nam
+            tankaBox.Text = tanka
+        End If
     End Sub
 
     ''' <summary>
