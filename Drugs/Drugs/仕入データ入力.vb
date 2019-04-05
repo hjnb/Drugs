@@ -9,6 +9,12 @@ Public Class 仕入データ入力
     '消費税率配列
     Private taxArray() As String = {"0.05", "0.08", "0.10"}
 
+    'テキストボックスのマウスダウンイベント制御用
+    Private mdFlag As Boolean = False
+
+    '選択行インデックス保持用
+    Private selectedRowIndex As Integer = -1
+
     ''' <summary>
     ''' 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
     ''' </summary>
@@ -44,9 +50,6 @@ Public Class 仕入データ入力
         '日付ボックスのエンターキー押下イベント用
         YmdBox.canEnterKeyDown = True
 
-        '現在日付セット
-        YmdBox.setADStr(Today.ToString("yyyy/MM/dd"))
-
         '消費税率ボックス初期設定
         initTaxBox()
 
@@ -58,6 +61,16 @@ Public Class 仕入データ入力
 
         'データグリッドビュー（下）の初期設定
         initDgvSiire()
+
+        '入力テキストボックス
+        initInputTextBox()
+
+        '現在日付セット、現在日付データ表示
+        YmdBox.setADStr(Today.ToString("yyyy/MM/dd"))
+        displayDgvSiire(YmdBox.getADStr())
+
+        '初期フォーカス
+        codBox.Focus()
     End Sub
 
     ''' <summary>
@@ -72,6 +85,8 @@ Public Class 仕入データ入力
         'iniファイルから読み込み、初期選択値を設定
         Dim tax As String = Util.getIniString("System", "Tax", TopForm.iniFilePath)
         taxBox.SelectedText = tax
+
+        taxBox.ImeMode = Windows.Forms.ImeMode.Disable
     End Sub
 
     ''' <summary>
@@ -79,6 +94,7 @@ Public Class 仕入データ入力
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub initSiireBox()
+        siireBox.ImeMode = Windows.Forms.ImeMode.Disable
         siireBox.Items.Clear()
         Dim cn As New ADODB.Connection()
         cn.Open(TopForm.DB_Drugs)
@@ -92,6 +108,28 @@ Public Class 仕入データ入力
         End While
         rs.Close()
         cn.Close()
+    End Sub
+
+    ''' <summary>
+    ''' 入力テキストボックス初期設定
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub initInputTextBox()
+        '伝票No.
+        dennoBox.ImeMode = Windows.Forms.ImeMode.Disable
+
+        'カナ
+        codBox.ImeMode = Windows.Forms.ImeMode.Hiragana
+
+        '品名
+        namBox.ImeMode = Windows.Forms.ImeMode.Hiragana
+
+        '数量
+        suryoBox.ImeMode = Windows.Forms.ImeMode.Disable
+
+        '単価
+        tankaBox.ImeMode = Windows.Forms.ImeMode.Disable
+
     End Sub
 
     ''' <summary>
@@ -217,6 +255,8 @@ Public Class 仕入データ入力
                 .DefaultCellStyle.Format = "#,0"
             End With
         End With
+
+        dgvSearch.Focus()
     End Sub
 
     ''' <summary>
@@ -224,13 +264,19 @@ Public Class 仕入データ入力
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub displayDgvSiire(ymd As String)
+        '入力テキストクリア
+        codBox.Text = ""
+        namBox.Text = ""
+        suryoBox.Text = ""
+        tankaBox.Text = ""
+
         '内容クリア
         dgvSiire.Columns.Clear()
 
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Drugs)
         Dim rs As New ADODB.Recordset
-        Dim sql As String = "select Ymd, Siire, Denno, Cod, Nam, Suryo, Tanka, Kingak, Zei, Gokei from SiireD where Ymd='" & ymd & "' order by Denno, Autono Desc"
+        Dim sql As String = "select autono, Ymd, Siire, Denno, Cod, Nam, Suryo, Tanka, Kingak, Zei, Gokei from SiireD where Ymd='" & ymd & "' order by Denno, Autono Desc"
         rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
         Dim da As OleDbDataAdapter = New OleDbDataAdapter()
         Dim ds As DataSet = New DataSet()
@@ -243,6 +289,9 @@ Public Class 仕入データ入力
 
         '幅設定等
         With dgvSiire
+            '非表示列
+            .Columns("autono").Visible = False
+
             With .Columns("Ymd")
                 .HeaderText = "日付"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
@@ -315,6 +364,12 @@ Public Class 仕入データ入力
                 .DefaultCellStyle.Format = "#,0"
             End With
         End With
+
+        'カナボックスにフォーカス
+        codBox.Focus()
+
+        '選択行インデックス（保持用）を初期値に
+        selectedRowIndex = -1
     End Sub
 
     ''' <summary>
@@ -374,6 +429,10 @@ Public Class 仕入データ入力
             codBox.Text = cod
             namBox.Text = nam
             tankaBox.Text = tanka
+
+            '数量を1でセット
+            suryoBox.Text = "1"
+            suryoBox.Focus()
         End If
     End Sub
 
@@ -399,6 +458,8 @@ Public Class 仕入データ入力
             namBox.Text = nam
             suryoBox.Text = suryo
             tankaBox.Text = tanka
+
+            selectedRowIndex = e.RowIndex
         End If
     End Sub
 
@@ -427,6 +488,317 @@ Public Class 仕入データ入力
                 TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
             '描画が完了したことを知らせる
             e.Handled = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 入力テキストボックスエンターイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub textBox_Enter(sender As Object, e As System.EventArgs) Handles dennoBox.Enter, codBox.Enter, namBox.Enter, suryoBox.Enter, tankaBox.Enter
+        Dim tb As TextBox = CType(sender, TextBox)
+        tb.SelectAll()
+        mdFlag = True
+    End Sub
+
+    ''' <summary>
+    ''' 入力テキストボックスマウスダウンイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub textBox_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles dennoBox.MouseDown, codBox.MouseDown, namBox.MouseDown, suryoBox.MouseDown, tankaBox.MouseDown
+        If mdFlag = True Then
+            Dim tb As TextBox = CType(sender, TextBox)
+            tb.SelectAll()
+            mdFlag = False
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' データグリッドビュー右上でエンターキーkeyDownイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSearch_keyDownEnter(sender As Object, e As System.EventArgs) Handles dgvSearch.keyDownEnter
+        If Not IsNothing(dgvSearch.CurrentCell) Then
+            Dim rowIndex As Integer = dgvSearch.CurrentCell.RowIndex
+            Dim cod As String = Util.checkDBNullValue(dgvSearch("Cod", rowIndex).Value) 'カナ
+            Dim nam As String = Util.checkDBNullValue(dgvSearch("Nam", rowIndex).Value) '品名
+            Dim tanka As String = Util.checkDBNullValue(dgvSearch("Tanka", rowIndex).FormattedValue) '単価
+
+            '各ボックスへセット
+            codBox.Text = cod
+            namBox.Text = nam
+            tankaBox.Text = tanka
+
+            '数量を1でセット
+            suryoBox.Text = "1"
+            suryoBox.Focus()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 追加ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnAdd_Click(sender As System.Object, e As System.EventArgs) Handles btnAdd.Click
+        '入力内容
+        Dim ymd As String = YmdBox.getADStr() '日付
+        Dim tax As String = taxBox.Text '消費税率
+        Dim siire As String = siireBox.Text '仕入先
+        Dim denno As String = dennoBox.Text '伝票No.
+        Dim cod As String = codBox.Text 'カナ(ｺｰﾄﾞ)
+        Dim nam As String = namBox.Text '品名
+        Dim suryo As String = suryoBox.Text.Replace(",", "") '数量
+        Dim tanka As String = tankaBox.Text.Replace(",", "") '単価
+
+        '入力チェック
+        If tax = "" Then
+            MsgBox("消費税率を選択して下さい。", MsgBoxStyle.Exclamation)
+            taxBox.Focus()
+            taxBox.DroppedDown = True
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tax, "^\d+(\.\d+)?$") Then
+            MsgBox("消費税率を正しく入力して下さい。(例：0.08)", MsgBoxStyle.Exclamation)
+            taxBox.Focus()
+            Return
+        End If
+        If siire = "" Then
+            MsgBox("仕入先を選択して下さい。", MsgBoxStyle.Exclamation)
+            siireBox.Focus()
+            siireBox.DroppedDown = True
+            Return
+        End If
+        If denno = "" Then
+            MsgBox("伝票Noを入力して下さい。", MsgBoxStyle.Exclamation)
+            dennoBox.Focus()
+            Return
+        End If
+        If cod = "" Then
+            MsgBox("ｺｰﾄﾞを入力して下さい。", MsgBoxStyle.Exclamation)
+            codBox.Focus()
+            Return
+        End If
+        If nam = "" Then
+            MsgBox("品名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        If suryo = "" Then
+            MsgBox("数量を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^\d+$") Then
+            MsgBox("数量は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+        If tanka = "" Then
+            MsgBox("単価を入力して下さい。", MsgBoxStyle.Exclamation)
+            tankaBox.Focus()
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^\d+$") Then
+            MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+
+        '登録データ作成
+        Dim kingak As Decimal = CDec(tanka) * CDec(suryo) '金額
+        Dim zei As Decimal = Math.Round(kingak * CDec(tax), 0, MidpointRounding.AwayFromZero) '消費税
+        Dim gokei As Decimal = kingak + zei '合計
+
+        '登録
+        Dim cn As New ADODB.Connection()
+        cn.Open(TopForm.DB_Drugs)
+        Dim rs As New ADODB.Recordset
+        rs.Open("SiireD", cn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+        rs.AddNew()
+        rs.Fields("Ymd").Value = ymd
+        rs.Fields("Siire").Value = siire
+        rs.Fields("Denno").Value = denno
+        rs.Fields("Cod").Value = cod
+        rs.Fields("Nam").Value = nam
+        rs.Fields("Suryo").Value = suryo
+        rs.Fields("Tanka").Value = tanka
+        rs.Fields("Kingak").Value = kingak
+        rs.Fields("Zei").Value = zei
+        rs.Fields("Gokei").Value = gokei
+        rs.Update()
+
+        rs.Close()
+        cn.Close()
+
+        '検索結果クリア
+        dgvSearch.Columns.Clear()
+
+        '再表示
+        displayDgvSiire(ymd)
+    End Sub
+
+    ''' <summary>
+    ''' 変更ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnChange_Click(sender As System.Object, e As System.EventArgs) Handles btnChange.Click
+        '変更対象行を未選択
+        If selectedRowIndex = -1 Then
+            MsgBox("変更ﾃﾞｰﾀが選択されていません。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+
+        '入力内容取得
+        Dim ymd As String = YmdBox.getADStr() '日付
+        Dim tax As String = taxBox.Text '消費税率
+        Dim siire As String = siireBox.Text '仕入先
+        Dim denno As String = dennoBox.Text '伝票No.
+        Dim cod As String = codBox.Text 'カナ(ｺｰﾄﾞ)
+        Dim nam As String = namBox.Text '品名
+        Dim suryo As String = suryoBox.Text.Replace(",", "") '数量
+        Dim tanka As String = tankaBox.Text.Replace(",", "") '単価
+
+        '入力チェック
+        If tax = "" Then
+            MsgBox("消費税率を選択して下さい。", MsgBoxStyle.Exclamation)
+            taxBox.Focus()
+            taxBox.DroppedDown = True
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tax, "^\d+(\.\d+)?$") Then
+            MsgBox("消費税率を正しく入力して下さい。(例：0.08)", MsgBoxStyle.Exclamation)
+            taxBox.Focus()
+            Return
+        End If
+        If siire = "" Then
+            MsgBox("仕入先を選択して下さい。", MsgBoxStyle.Exclamation)
+            siireBox.Focus()
+            siireBox.DroppedDown = True
+            Return
+        End If
+        If denno = "" Then
+            MsgBox("伝票Noを入力して下さい。", MsgBoxStyle.Exclamation)
+            dennoBox.Focus()
+            Return
+        End If
+        If cod = "" Then
+            MsgBox("ｺｰﾄﾞを入力して下さい。", MsgBoxStyle.Exclamation)
+            codBox.Focus()
+            Return
+        End If
+        If nam = "" Then
+            MsgBox("品名を入力して下さい。", MsgBoxStyle.Exclamation)
+            namBox.Focus()
+            Return
+        End If
+        If suryo = "" Then
+            MsgBox("数量を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^\d+$") Then
+            MsgBox("数量は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+        If tanka = "" Then
+            MsgBox("単価を入力して下さい。", MsgBoxStyle.Exclamation)
+            tankaBox.Focus()
+            Return
+        End If
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^\d+$") Then
+            MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
+            suryoBox.Focus()
+            Return
+        End If
+
+        '金額、消費税、合計計算
+        Dim kingak As Decimal = CDec(tanka) * CDec(suryo) '金額
+        Dim zei As Decimal = Math.Round(kingak * CDec(tax), 0, MidpointRounding.AwayFromZero) '消費税
+        Dim gokei As Decimal = kingak + zei '合計
+
+        '変更行のautono取得
+        Dim autono As Integer = dgvSiire("autono", selectedRowIndex).Value
+
+        '登録
+        Dim cn As New ADODB.Connection()
+        cn.Open(TopForm.DB_Drugs)
+        Dim rs As New ADODB.Recordset
+        Dim sql As String = "select * from SiireD where autono=" & autono
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount = 1 Then
+            '更新
+            rs.Fields("Ymd").Value = ymd
+            rs.Fields("Siire").Value = siire
+            rs.Fields("Denno").Value = denno
+            rs.Fields("Cod").Value = cod
+            rs.Fields("Nam").Value = nam
+            rs.Fields("Suryo").Value = suryo
+            rs.Fields("Tanka").Value = tanka
+            rs.Fields("Kingak").Value = kingak
+            rs.Fields("Zei").Value = zei
+            rs.Fields("Gokei").Value = gokei
+            rs.Update()
+
+            rs.Close()
+            cn.Close()
+
+            '検索結果クリア
+            dgvSearch.Columns.Clear()
+
+            '再表示
+            displayDgvSiire(ymd)
+        Else
+            rs.Close()
+            cn.Close()
+            MsgBox("選択行のデータが存在しません。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 削除ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnDelete_Click(sender As System.Object, e As System.EventArgs) Handles btnDelete.Click
+        '削除対象行を未選択
+        If selectedRowIndex = -1 Then
+            MsgBox("削除ﾃﾞｰﾀが選択されていません。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+
+        Dim result As DialogResult = MessageBox.Show("削除してよろしいですか？", "削除", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If result = Windows.Forms.DialogResult.Yes Then
+            '削除行のautono取得
+            Dim autono As Integer = dgvSiire("autono", selectedRowIndex).Value
+
+            '削除
+            Dim cn As New ADODB.Connection()
+            cn.Open(TopForm.DB_Drugs)
+            Dim cmd As New ADODB.Command()
+            cmd.ActiveConnection = cn
+            cmd.CommandText = "delete from SiireD where autono = " & autono
+            cmd.Execute()
+
+            cn.Close()
+
+            '検索結果クリア
+            dgvSearch.Columns.Clear()
+
+            '再表示
+            displayDgvSiire(YmdBox.getADStr())
         End If
     End Sub
 End Class

@@ -44,7 +44,7 @@ Partial Class 仕入データ入力
         Me.btnChange = New System.Windows.Forms.Button()
         Me.btnDelete = New System.Windows.Forms.Button()
         Me.btnPrint = New System.Windows.Forms.Button()
-        Me.dgvSearch = New System.Windows.Forms.DataGridView()
+        Me.dgvSearch = New Drugs.SiireDataGridView(Me.components)
         Me.dgvSiire = New Drugs.SiireDataGridView(Me.components)
         Me.GroupBox.SuspendLayout()
         CType(Me.dgvSearch, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -140,7 +140,7 @@ Partial Class 仕入データ入力
         Me.YmdBox.EraLabelText = "H31"
         Me.YmdBox.EraText = ""
         Me.YmdBox.Location = New System.Drawing.Point(82, 13)
-        Me.YmdBox.MonthLabelText = "03"
+        Me.YmdBox.MonthLabelText = "04"
         Me.YmdBox.MonthText = ""
         Me.YmdBox.Name = "YmdBox"
         Me.YmdBox.Size = New System.Drawing.Size(110, 34)
@@ -261,7 +261,7 @@ Partial Class 仕入データ入力
         Me.dgvSearch.Name = "dgvSearch"
         Me.dgvSearch.RowTemplate.Height = 21
         Me.dgvSearch.Size = New System.Drawing.Size(598, 151)
-        Me.dgvSearch.TabIndex = 6
+        Me.dgvSearch.TabIndex = 8
         '
         'dgvSiire
         '
@@ -277,8 +277,8 @@ Partial Class 仕入データ入力
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1050, 697)
-        Me.Controls.Add(Me.dgvSiire)
         Me.Controls.Add(Me.dgvSearch)
+        Me.Controls.Add(Me.dgvSiire)
         Me.Controls.Add(Me.btnPrint)
         Me.Controls.Add(Me.btnDelete)
         Me.Controls.Add(Me.btnChange)
@@ -314,6 +314,6 @@ Partial Class 仕入データ入力
     Friend WithEvents btnChange As System.Windows.Forms.Button
     Friend WithEvents btnDelete As System.Windows.Forms.Button
     Friend WithEvents btnPrint As System.Windows.Forms.Button
-    Friend WithEvents dgvSearch As System.Windows.Forms.DataGridView
     Friend WithEvents dgvSiire As Drugs.SiireDataGridView
+    Friend WithEvents dgvSearch As Drugs.SiireDataGridView
 End Class
