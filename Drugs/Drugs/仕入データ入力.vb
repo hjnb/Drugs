@@ -276,7 +276,7 @@ Public Class 仕入データ入力
         Dim cnn As New ADODB.Connection
         cnn.Open(TopForm.DB_Drugs)
         Dim rs As New ADODB.Recordset
-        Dim sql As String = "select autono, Ymd, Siire, Denno, Cod, Nam, Suryo, Tanka, Kingak, Zei, Gokei from SiireD where Ymd='" & ymd & "' order by Denno, Autono Desc"
+        Dim sql As String = "select autono, Ymd, Siire, Denno, Cod, Nam, Suryo, Tanka, Kingak, Zei, Gokei from SiireD where Ymd='" & ymd & "' order by Autono Desc"
         rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
         Dim da As OleDbDataAdapter = New OleDbDataAdapter()
         Dim ds As DataSet = New DataSet()
@@ -800,5 +800,40 @@ Public Class 仕入データ入力
             '再表示
             displayDgvSiire(YmdBox.getADStr())
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        Dim ym As String = YmdBox.getADYmStr() '年月(yyyy/MM)
+        Dim year As Integer = CInt(ym.Split("/")(0)) '年
+        Dim month As Integer = CInt(ym.Split("/")(1)) '月
+        Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month) '月の日数
+        Dim fromYmd As String = ym & "/01" 'from日付
+        Dim toYmd As String = ym & "/" & daysInMonth 'to日付
+
+        '対象年月のデータ取得
+        Dim cn As New ADODB.Connection()
+        cn.Open(TopForm.DB_Drugs)
+        Dim rs As New ADODB.Recordset
+        Dim sql As String = "select * from SiireD where ('" & fromYmd & "' <= Ymd and Ymd <= '" & toYmd & "') order by Siire, Ymd, Denno"
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        If rs.RecordCount <= 0 Then
+            rs.Close()
+            cn.Close()
+            MsgBox("該当がありません。", MsgBoxStyle.Exclamation)
+            Return
+        End If
+
+        '書き込みデータ作成
+        '
+        '
+
+
+
     End Sub
 End Class
