@@ -82,7 +82,7 @@ Partial Class 仕入データ入力
         Me.taxBox.Location = New System.Drawing.Point(289, 18)
         Me.taxBox.Name = "taxBox"
         Me.taxBox.Size = New System.Drawing.Size(67, 20)
-        Me.taxBox.TabIndex = 14
+        Me.taxBox.TabIndex = 100
         '
         'tankaBox
         '
@@ -90,7 +90,7 @@ Partial Class 仕入データ入力
         Me.tankaBox.Location = New System.Drawing.Point(83, 184)
         Me.tankaBox.Name = "tankaBox"
         Me.tankaBox.Size = New System.Drawing.Size(100, 22)
-        Me.tankaBox.TabIndex = 13
+        Me.tankaBox.TabIndex = 106
         '
         'suryoBox
         '
@@ -98,7 +98,7 @@ Partial Class 仕入データ入力
         Me.suryoBox.Location = New System.Drawing.Point(83, 159)
         Me.suryoBox.Name = "suryoBox"
         Me.suryoBox.Size = New System.Drawing.Size(100, 22)
-        Me.suryoBox.TabIndex = 12
+        Me.suryoBox.TabIndex = 105
         '
         'namBox
         '
@@ -106,7 +106,7 @@ Partial Class 仕入データ入力
         Me.namBox.Location = New System.Drawing.Point(83, 134)
         Me.namBox.Name = "namBox"
         Me.namBox.Size = New System.Drawing.Size(304, 22)
-        Me.namBox.TabIndex = 12
+        Me.namBox.TabIndex = 104
         '
         'codBox
         '
@@ -114,7 +114,7 @@ Partial Class 仕入データ入力
         Me.codBox.Location = New System.Drawing.Point(83, 109)
         Me.codBox.Name = "codBox"
         Me.codBox.Size = New System.Drawing.Size(100, 22)
-        Me.codBox.TabIndex = 11
+        Me.codBox.TabIndex = 103
         '
         'dennoBox
         '
@@ -122,7 +122,7 @@ Partial Class 仕入データ入力
         Me.dennoBox.Location = New System.Drawing.Point(83, 77)
         Me.dennoBox.Name = "dennoBox"
         Me.dennoBox.Size = New System.Drawing.Size(100, 22)
-        Me.dennoBox.TabIndex = 10
+        Me.dennoBox.TabIndex = 102
         '
         'siireBox
         '
@@ -131,7 +131,7 @@ Partial Class 仕入データ入力
         Me.siireBox.Location = New System.Drawing.Point(83, 49)
         Me.siireBox.Name = "siireBox"
         Me.siireBox.Size = New System.Drawing.Size(121, 23)
-        Me.siireBox.TabIndex = 9
+        Me.siireBox.TabIndex = 101
         '
         'YmdBox
         '
@@ -144,7 +144,7 @@ Partial Class 仕入データ入力
         Me.YmdBox.MonthText = ""
         Me.YmdBox.Name = "YmdBox"
         Me.YmdBox.Size = New System.Drawing.Size(110, 34)
-        Me.YmdBox.TabIndex = 8
+        Me.YmdBox.TabIndex = 99
         '
         'Label8
         '

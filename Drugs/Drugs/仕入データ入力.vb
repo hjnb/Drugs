@@ -383,6 +383,8 @@ Public Class 仕入データ入力
             Dim inputStr As String = codBox.Text
             If inputStr <> "" Then
                 displayDgvSearch(inputStr, SEARCH_TYPE_COD)
+            Else
+                Me.SelectNextControl(Me.ActiveControl, Not e.Shift, True, True, True)
             End If
         End If
     End Sub
@@ -538,6 +540,30 @@ Public Class 仕入データ入力
             '数量を1でセット
             suryoBox.Text = "1"
             suryoBox.Focus()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 仕入先ボックスマウスクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub siireBox_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles siireBox.MouseClick
+        If siireBox.Text = "" Then
+            siireBox.DroppedDown = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 入力テキストボックスkeydownイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub textBox_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles siireBox.KeyDown, dennoBox.KeyDown, suryoBox.KeyDown, tankaBox.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            Me.SelectNextControl(Me.ActiveControl, Not e.Shift, True, True, True)
         End If
     End Sub
 

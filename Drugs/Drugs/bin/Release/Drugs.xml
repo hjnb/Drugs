@@ -256,6 +256,20 @@ Drugs
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.siireBox_MouseClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ 仕入先ボックスマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.textBox_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ 入力テキストボックスkeydownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:Drugs.仕入データ入力.btnAdd_Click(System.Object,System.EventArgs)">
 	<summary>
  追加ボタンクリックイベント
