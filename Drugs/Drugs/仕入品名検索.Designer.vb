@@ -55,10 +55,11 @@ Partial Class 仕入品名検索
         '
         Me.searchTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.searchTextBox.Font = New System.Drawing.Font("MS UI Gothic", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.searchTextBox.ImeMode = System.Windows.Forms.ImeMode.Hiragana
         Me.searchTextBox.Location = New System.Drawing.Point(132, 45)
         Me.searchTextBox.Name = "searchTextBox"
         Me.searchTextBox.Size = New System.Drawing.Size(264, 14)
-        Me.searchTextBox.TabIndex = 3
+        Me.searchTextBox.TabIndex = 100
         '
         'denDateLabel
         '
@@ -73,7 +74,7 @@ Partial Class 仕入品名検索
         Me.btnExecute.Location = New System.Drawing.Point(453, 36)
         Me.btnExecute.Name = "btnExecute"
         Me.btnExecute.Size = New System.Drawing.Size(68, 32)
-        Me.btnExecute.TabIndex = 5
+        Me.btnExecute.TabIndex = 101
         Me.btnExecute.Text = "実行"
         Me.btnExecute.UseVisualStyleBackColor = True
         '

@@ -34,6 +34,8 @@ Public Class 仕入品名検索
         'データグリッドビュー初期設定
         initDgvSearchResult()
 
+        '初期フォーカス
+        searchTextBox.Focus()
     End Sub
 
     ''' <summary>
@@ -107,6 +109,16 @@ Public Class 仕入品名検索
         dgvSearchResult.DataSource = ds.Tables("Search")
         cnn.Close()
 
+        '行数
+        Dim rowCount As Integer = dgvSearchResult.Rows.Count
+
+        If rowCount > 0 Then
+            '日付を和暦に変換
+            For Each row As DataGridViewRow In dgvSearchResult.Rows
+                row.Cells("Ymd").Value = Util.convADStrToWarekiStr(Util.checkDBNullValue(row.Cells("Ymd").Value))
+            Next
+        End If
+
         '幅設定等
         With dgvSearchResult
             '非表示列
@@ -150,10 +162,16 @@ Public Class 仕入品名検索
                 .HeaderText = "仕入先"
                 .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
                 .SortMode = DataGridViewColumnSortMode.NotSortable
-                .Width = 100
+                If rowCount <= 30 Then
+                    .Width = 117
+                Else
+                    .Width = 100
+                End If
             End With
-            
         End With
+
+        'フォーカス
+        searchTextBox.Focus()
     End Sub
 
     ''' <summary>
@@ -178,10 +196,25 @@ Public Class 仕入品名検索
     ''' <remarks></remarks>
     Private Sub dgvSearchResult_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles dgvSearchResult.CellFormatting
         If e.RowIndex >= 1 AndAlso e.ColumnIndex = 1 Then
+            '日付のグループ化
             If e.Value = dgvSearchResult("Ymd", e.RowIndex - 1).Value Then
                 e.Value = ""
                 e.FormattingApplied = True
             End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' セルマウスクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSearchResult_CellMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles dgvSearchResult.CellMouseClick
+        If e.RowIndex >= 0 Then
+            Dim nam As String = Util.checkDBNullValue(dgvSearchResult("Nam", e.RowIndex).Value)
+            searchTextBox.Text = nam
+            searchTextBox.Focus()
         End If
     End Sub
 
@@ -211,5 +244,27 @@ Public Class 仕入品名検索
             '描画が完了したことを知らせる
             e.Handled = True
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 検索文字列ボックスkeyDownイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub searchTextBox_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles searchTextBox.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            Me.SelectNextControl(Me.ActiveControl, Not e.Shift, True, True, True)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 印刷ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+
     End Sub
 End Class
