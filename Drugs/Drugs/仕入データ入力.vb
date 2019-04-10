@@ -622,7 +622,7 @@ Public Class 仕入データ入力
             suryoBox.Focus()
             Return
         End If
-        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^\d+$") Then
+        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^-?\d+$") Then
             MsgBox("数量は数値を入力して下さい。", MsgBoxStyle.Exclamation)
             suryoBox.Focus()
             Return
@@ -632,7 +632,7 @@ Public Class 仕入データ入力
             tankaBox.Focus()
             Return
         End If
-        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^\d+$") Then
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^-?\d+$") Then
             MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
             suryoBox.Focus()
             Return
@@ -732,7 +732,7 @@ Public Class 仕入データ入力
             suryoBox.Focus()
             Return
         End If
-        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^\d+$") Then
+        If Not System.Text.RegularExpressions.Regex.IsMatch(suryo, "^-?\d+$") Then
             MsgBox("数量は数値を入力して下さい。", MsgBoxStyle.Exclamation)
             suryoBox.Focus()
             Return
@@ -742,7 +742,7 @@ Public Class 仕入データ入力
             tankaBox.Focus()
             Return
         End If
-        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^\d+$") Then
+        If Not System.Text.RegularExpressions.Regex.IsMatch(tanka, "^-?\d+$") Then
             MsgBox("単価は数値を入力して下さい。", MsgBoxStyle.Exclamation)
             suryoBox.Focus()
             Return

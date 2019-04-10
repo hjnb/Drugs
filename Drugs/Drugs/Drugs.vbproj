@@ -169,6 +169,9 @@
     <EmbeddedResource Include="仕入データ入力.resx">
       <DependentUpon>仕入データ入力.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="仕入品名検索.resx">
+      <DependentUpon>仕入品名検索.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Application.myapp">
