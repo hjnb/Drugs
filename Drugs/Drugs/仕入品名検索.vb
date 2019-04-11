@@ -1,4 +1,6 @@
 ﻿Imports System.Data.OleDb
+Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
 Public Class 仕入品名検索
 
@@ -265,6 +267,108 @@ Public Class 仕入品名検索
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub btnPrint_Click(sender As System.Object, e As System.EventArgs) Handles btnPrint.Click
+        '検索文字列
+        Dim searchText As String = searchTextBox.Text
 
+        'データ取得
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Drugs)
+        Dim rs As New ADODB.Recordset
+        Dim sql As String = "select autono, Ymd, Nam, Suryo, Tanka, Kingak, Siire from SiireD where Nam Like'%" & searchText & "%' order by Ymd"
+        rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+        Dim recordCount As Integer = rs.RecordCount
+
+        'エクセル準備
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(TopForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("検索１改")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '共通部分
+        oSheet.Range("E2").Value = searchText '検索品名
+        oSheet.Range("H2").Value = "1頁" 'ページ数
+
+        '必要枚数コピペ
+        Dim loopCount As Integer
+        If recordCount Mod 70 = 0 Then
+            loopCount = recordCount \ 70 - 2
+        Else
+            loopCount = recordCount \ 70 - 1
+        End If
+        For i As Integer = 0 To loopCount
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (75 + (74 * i))) 'ペースト先
+            oSheet.Rows("1:74").copy(xlPasteRange)
+            oSheet.HPageBreaks.Add(oSheet.Range("A" & (75 + (74 * i)))) '改ページ
+            oSheet.Range("H" & (76 + (74 * i))).Value = (i + 2) & "頁" 'ページ数
+        Next
+
+        'データ作成、書き込み
+        Dim dataArray(69, 6) As String
+        Dim pageCount As Integer = 1
+        Dim rowIndex As Integer = 0
+        Dim rowNo As Integer = 1
+        Dim tmpYmd As String = ""
+        While Not rs.EOF
+            If rowIndex = 70 Then
+                '貼り付け
+                oSheet.Range("B" & (4 + 74 * (pageCount - 1)), "H" & (73 + 74 * (pageCount - 1))).Value = dataArray
+
+                'データ配列クリア
+                Array.Clear(dataArray, 0, dataArray.Length)
+
+                '更新
+                pageCount += 1
+                rowIndex = 0
+            End If
+
+            Dim ymd As String = Util.checkDBNullValue(rs.Fields("Ymd").Value)
+            Dim nam As String = Util.checkDBNullValue(rs.Fields("Nam").Value)
+            Dim suryo As Integer = rs.Fields("Suryo").Value
+            Dim tanka As Integer = rs.Fields("Tanka").Value
+            Dim kingak As Integer = rs.Fields("Kingak").Value
+            Dim siire As String = Util.checkDBNullValue(rs.Fields("Siire").Value)
+
+            dataArray(rowIndex, 0) = rowNo
+            If ymd <> tmpYmd Then
+                dataArray(rowIndex, 1) = Util.convADStrToWarekiStr(ymd)
+                tmpYmd = ymd
+            End If
+            dataArray(rowIndex, 2) = nam
+            dataArray(rowIndex, 3) = suryo.ToString("#,0")
+            dataArray(rowIndex, 4) = tanka.ToString("#,0")
+            dataArray(rowIndex, 5) = kingak.ToString("#,0")
+            dataArray(rowIndex, 6) = siire
+
+            rs.MoveNext()
+            rowIndex += 1
+            rowNo += 1
+        End While
+        oSheet.Range("B" & (4 + 74 * (pageCount - 1)), "H" & (73 + 74 * (pageCount - 1))).Value = dataArray
+        rs.Close()
+        cnn.Close()
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If TopForm.rbtnPrintout.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf TopForm.rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
     End Sub
 End Class
