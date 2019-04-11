@@ -94,7 +94,7 @@ Public Class 仕入データ入力
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub initSiireBox()
-        siireBox.ImeMode = Windows.Forms.ImeMode.Disable
+        siireBox.ImeMode = Windows.Forms.ImeMode.Hiragana
         siireBox.Items.Clear()
         Dim cn As New ADODB.Connection()
         cn.Open(TopForm.DB_Drugs)

@@ -58,6 +58,11 @@ Drugs
 	<param name="lpFileName">iniファイルパス</param>
 	<returns></returns>
 	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initSiireBox">
+	<summary>
+ 仕入先ボックス初期設定
+ </summary>
+	<remarks></remarks>
 </member><member name="T:Drugs.仕入品名検索.dgvRowHeaderCell">
 	<summary>
  行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
