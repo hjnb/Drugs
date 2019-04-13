@@ -58,10 +58,62 @@ Drugs
 	<param name="lpFileName">iniファイルパス</param>
 	<returns></returns>
 	<remarks></remarks>
+</member><member name="T:Drugs.仕入状況.dgvRowHeaderCell">
+	<summary>
+ 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.仕入状況_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:Drugs.仕入状況.initSiireBox">
 	<summary>
  仕入先ボックス初期設定
  </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initYmdBox">
+	<summary>
+ 日付ボックス初期値設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initDgvSiire">
+	<summary>
+ データグリッドビュー初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.displayNamList(System.String,System.String,System.String)">
+	<summary>
+ リスト表示
+ </summary>
+	<param name="siire">仕入先</param>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.displayDgvSiire(System.String,System.String,System.String)">
+	<summary>
+ 対象の品名の仕入状況表示
+ </summary>
+	<param name="nam">品名</param>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.siireBox_SelectedValueChanged(System.Object,System.EventArgs)">
+	<summary>
+ 仕入先ボックス値変更イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.namListBox_SelectedValueChanged(System.Object,System.EventArgs)">
+	<summary>
+ リスト選択値変更イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
 	<remarks></remarks>
 </member><member name="T:Drugs.仕入品名検索.dgvRowHeaderCell">
 	<summary>

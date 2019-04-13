@@ -47,7 +47,7 @@ Partial Class 仕入状況
         'namLabel
         '
         Me.namLabel.AutoSize = True
-        Me.namLabel.Location = New System.Drawing.Point(43, 64)
+        Me.namLabel.Location = New System.Drawing.Point(44, 61)
         Me.namLabel.Name = "namLabel"
         Me.namLabel.Size = New System.Drawing.Size(0, 12)
         Me.namLabel.TabIndex = 1
