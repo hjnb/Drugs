@@ -288,7 +288,7 @@ Public Class 仕入品名検索
 
         '共通部分
         oSheet.Range("E2").Value = searchText '検索品名
-        oSheet.Range("H2").Value = "1頁" 'ページ数
+        oSheet.Range("I2").Value = "1頁" 'ページ数
 
         '必要枚数コピペ
         Dim loopCount As Integer
@@ -301,7 +301,7 @@ Public Class 仕入品名検索
             Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (75 + (74 * i))) 'ペースト先
             oSheet.Rows("1:74").copy(xlPasteRange)
             oSheet.HPageBreaks.Add(oSheet.Range("A" & (75 + (74 * i)))) '改ページ
-            oSheet.Range("H" & (76 + (74 * i))).Value = (i + 2) & "頁" 'ページ数
+            oSheet.Range("I" & (76 + (74 * i))).Value = (i + 2) & "頁" 'ページ数
         Next
 
         'データ作成、書き込み
