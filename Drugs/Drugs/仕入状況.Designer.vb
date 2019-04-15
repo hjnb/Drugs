@@ -30,9 +30,9 @@ Partial Class 仕入状況
         Me.fromYmdBox = New ymdBox.ymdBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.toYmdBox = New ymdBox.ymdBox()
-        Me.dgvSiire = New Drugs.SiireDataGridView(Me.components)
         Me.btnDisplay = New System.Windows.Forms.Button()
         Me.resultRowCountLabel = New System.Windows.Forms.Label()
+        Me.dgvSiire = New Drugs.SiireDataGridView(Me.components)
         CType(Me.dgvSiire, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -106,15 +106,6 @@ Partial Class 仕入状況
         Me.toYmdBox.Size = New System.Drawing.Size(110, 34)
         Me.toYmdBox.TabIndex = 6
         '
-        'dgvSiire
-        '
-        Me.dgvSiire.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvSiire.Location = New System.Drawing.Point(352, 78)
-        Me.dgvSiire.Name = "dgvSiire"
-        Me.dgvSiire.RowTemplate.Height = 21
-        Me.dgvSiire.Size = New System.Drawing.Size(304, 556)
-        Me.dgvSiire.TabIndex = 7
-        '
         'btnDisplay
         '
         Me.btnDisplay.Location = New System.Drawing.Point(672, 101)
@@ -131,6 +122,15 @@ Partial Class 仕入状況
         Me.resultRowCountLabel.Name = "resultRowCountLabel"
         Me.resultRowCountLabel.Size = New System.Drawing.Size(0, 12)
         Me.resultRowCountLabel.TabIndex = 9
+        '
+        'dgvSiire
+        '
+        Me.dgvSiire.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvSiire.Location = New System.Drawing.Point(352, 75)
+        Me.dgvSiire.Name = "dgvSiire"
+        Me.dgvSiire.RowTemplate.Height = 21
+        Me.dgvSiire.Size = New System.Drawing.Size(304, 559)
+        Me.dgvSiire.TabIndex = 7
         '
         '仕入状況
         '

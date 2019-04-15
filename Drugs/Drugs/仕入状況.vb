@@ -58,7 +58,9 @@ Public Class 仕入状況
         rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
         While Not rs.EOF
             Dim txt As String = Util.checkDBNullValue(rs.Fields("Text").Value)
-            siireBox.Items.Add(txt)
+            If txt <> "" Then
+                siireBox.Items.Add(txt)
+            End If
             rs.MoveNext()
         End While
         rs.Close()
@@ -104,8 +106,9 @@ Public Class 仕入状況
             .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
             .ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
             .ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .ColumnHeadersHeight = 18
-            .RowTemplate.Height = 16
+            .ColumnHeadersHeight = 17
+            .RowTemplate.Height = 15
+            .RowHeadersWidth = 30
             .BackgroundColor = Color.FromKnownColor(KnownColor.Control)
             .RowTemplate.HeaderCell = New dgvRowHeaderCell() '行ヘッダの三角マークを非表示に
             .ShowCellToolTips = False
@@ -160,9 +163,73 @@ Public Class 仕入状況
     ''' <param name="toYmd">to日付</param>
     ''' <remarks></remarks>
     Private Sub displayDgvSiire(nam As String, fromYmd As String, toYmd As String)
+        '内容クリア
+        dgvSiire.Columns.Clear()
+        resultRowCountLabel.Text = ""
 
+        'データ取得、表示
+        Dim cnn As New ADODB.Connection
+        cnn.Open(TopForm.DB_Drugs)
+        Dim rs As New ADODB.Recordset
+        Dim sql As String = "select Ymd, Suryo, Tanka, Kingak from SiireW where Nam = '" & nam & "' and ('" & fromYmd & "' <= Ymd and Ymd <= '" & toYmd & "') order by Ymd Desc"
+        rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+        Dim da As OleDbDataAdapter = New OleDbDataAdapter()
+        Dim ds As DataSet = New DataSet()
+        da.Fill(ds, rs, "Search")
+        dgvSiire.DataSource = ds.Tables("Search")
+        cnn.Close()
+
+        '行数ラベル表示
+        Dim rowCount As Integer = dgvSiire.Rows.Count
+        If rowCount > 0 Then
+            resultRowCountLabel.Text = rowCount
+        End If
+
+        '幅設定等
+        With dgvSiire
+            With .Columns("Ymd")
+                .HeaderText = "日付"
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+                .SortMode = DataGridViewColumnSortMode.NotSortable
+                .Width = 81
+            End With
+            With .Columns("Suryo")
+                .HeaderText = "数量"
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+                .SortMode = DataGridViewColumnSortMode.NotSortable
+                .Width = 50
+                .DefaultCellStyle.Format = "#,0"
+            End With
+            With .Columns("Tanka")
+                .HeaderText = "単価"
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+                .SortMode = DataGridViewColumnSortMode.NotSortable
+                If rowCount <= 36 Then
+                    .Width = 62 + 8
+                Else
+                    .Width = 62
+                End If
+                .DefaultCellStyle.Format = "#,0"
+            End With
+            With .Columns("Kingak")
+                .HeaderText = "金額"
+                .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+                .SortMode = DataGridViewColumnSortMode.NotSortable
+                If rowCount <= 36 Then
+                    .Width = 62 + 9
+                Else
+                    .Width = 62
+                End If
+                .DefaultCellStyle.Format = "#,0"
+            End With
+        End With
     End Sub
 
+    ''' <summary>
+    ''' SiireWテーブル作成
+    ''' </summary>
+    ''' <param name="siire"></param>
+    ''' <remarks></remarks>
     Private Sub initSiireW(siire As String)
         '既存データ削除
         Dim cn As New ADODB.Connection()
@@ -216,7 +283,10 @@ Public Class 仕入状況
     Private Sub siireBox_SelectedValueChanged(sender As Object, e As System.EventArgs) Handles siireBox.SelectedValueChanged
         Dim siire As String = siireBox.Text
         If siire <> "" Then
+            '選択された仕入先の指定期間の品名リスト表示
             displayNamList(siire, fromYmdBox.getADStr(), toYmdBox.getADStr())
+
+            '選択された仕入先でSiireWテーブル作成
             initSiireW(siire)
         End If
     End Sub
@@ -229,5 +299,64 @@ Public Class 仕入状況
     ''' <remarks></remarks>
     Private Sub namListBox_SelectedValueChanged(sender As Object, e As System.EventArgs) Handles namListBox.SelectedValueChanged
         namLabel.Text = namListBox.Text
+    End Sub
+
+    ''' <summary>
+    ''' cellFormatting
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSiire_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles dgvSiire.CellFormatting
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex = 0 Then
+            '日付を和暦に変換
+            e.Value = Util.convADStrToWarekiStr(Util.checkDBNullValue(e.Value))
+            e.FormattingApplied = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' CellPaintingイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSiire_CellPainting(sender As Object, e As System.Windows.Forms.DataGridViewCellPaintingEventArgs) Handles dgvSiire.CellPainting
+        '行ヘッダーかどうか調べる
+        If e.ColumnIndex < 0 AndAlso e.RowIndex >= 0 Then
+            'セルを描画する
+            e.Paint(e.ClipBounds, DataGridViewPaintParts.All)
+
+            '行番号を描画する範囲を決定する
+            'e.AdvancedBorderStyleやe.CellStyle.Paddingは無視しています
+            Dim indexRect As Rectangle = e.CellBounds
+            indexRect.Inflate(-2, -2)
+            '行番号を描画する
+            TextRenderer.DrawText(e.Graphics, _
+                (e.RowIndex + 1).ToString(), _
+                e.CellStyle.Font, _
+                indexRect, _
+                e.CellStyle.ForeColor, _
+                TextFormatFlags.HorizontalCenter Or TextFormatFlags.VerticalCenter)
+            '描画が完了したことを知らせる
+            e.Handled = True
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 表示ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnDisplay_Click(sender As System.Object, e As System.EventArgs) Handles btnDisplay.Click
+        '選択品名
+        Dim selectedNam As String = namLabel.Text
+        If selectedNam = "" Then
+            MsgBox("品名を選択して下さい。", MsgBoxStyle.Exclamation)
+            Return
+        Else
+            displayDgvSiire(selectedNam, fromYmdBox.getADStr(), toYmdBox.getADStr())
+        End If
     End Sub
 End Class

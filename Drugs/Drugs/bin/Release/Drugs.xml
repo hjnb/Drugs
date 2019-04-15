@@ -101,6 +101,12 @@ Drugs
 	<param name="fromYmd">from日付</param>
 	<param name="toYmd">to日付</param>
 	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initSiireW(System.String)">
+	<summary>
+ SiireWテーブル作成
+ </summary>
+	<param name="siire"></param>
+	<remarks></remarks>
 </member><member name="M:Drugs.仕入状況.siireBox_SelectedValueChanged(System.Object,System.EventArgs)">
 	<summary>
  仕入先ボックス値変更イベント
@@ -111,6 +117,27 @@ Drugs
 </member><member name="M:Drugs.仕入状況.namListBox_SelectedValueChanged(System.Object,System.EventArgs)">
 	<summary>
  リスト選択値変更イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.dgvSiire_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ cellFormatting
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.dgvSiire_CellPainting(System.Object,System.Windows.Forms.DataGridViewCellPaintingEventArgs)">
+	<summary>
+ CellPaintingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.btnDisplay_Click(System.Object,System.EventArgs)">
+	<summary>
+ 表示ボタンクリックイベント
  </summary>
 	<param name="sender"></param>
 	<param name="e"></param>
