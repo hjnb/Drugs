@@ -1,3 +1,286 @@
-﻿Public Class 仕入集計
+﻿Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
+Public Class 仕入集計
+
+    ''' <summary>
+    ''' loadイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub 仕入集計_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        Me.WindowState = FormWindowState.Maximized
+
+        '仕入先ボックス初期設定
+        initSiireBox()
+
+        '日付ボックス初期値設定
+        initYmdBox()
+
+        '初期フォーカス
+        fromYmdBox.Focus()
+    End Sub
+
+    ''' <summary>
+    ''' 仕入先ボックス初期設定
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub initSiireBox()
+        siireBox.ImeMode = Windows.Forms.ImeMode.Hiragana
+        siireBox.Items.Clear()
+        Dim cn As New ADODB.Connection()
+        cn.Open(TopForm.DB_Drugs)
+        Dim sql As String = "select * from EtcM order by Seq"
+        Dim rs As New ADODB.Recordset
+        rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockOptimistic)
+        While Not rs.EOF
+            Dim txt As String = Util.checkDBNullValue(rs.Fields("Text").Value)
+            siireBox.Items.Add(txt)
+            rs.MoveNext()
+        End While
+        rs.Close()
+        cn.Close()
+    End Sub
+
+    ''' <summary>
+    ''' 日付ボックス初期値設定
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub initYmdBox()
+        '現在日付
+        Dim nowDate As String = Today.ToString("yyyy/MM/dd")
+        Dim firstDate As New DateTime(CInt(nowDate.Split("/")(0)), CInt(nowDate.Split("/")(1)), 1)
+
+        'from初期値
+        Dim fromYmd As String = firstDate.AddYears(-1).ToString("yyyy/MM/dd")
+
+        'to初期値
+        Dim toYmd As String = firstDate.AddDays(-1).ToString("yyyy/MM/dd")
+
+        '値をセット
+        fromYmdBox.setADStr(fromYmd)
+        toYmdBox.setADStr(toYmd)
+
+        'エンターキー押下イベント制御用
+        fromYmdBox.canEnterKeyDown = True
+        toYmdBox.canEnterKeyDown = True
+    End Sub
+
+    ''' <summary>
+    ''' 日付ボックスエンターキー押下イベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub YmdBox_keyDownEnter(sender As Object, e As System.EventArgs) Handles fromYmdBox.keyDownEnterOrDown, toYmdBox.keyDownEnterOrDown
+        Me.SelectNextControl(Me.ActiveControl, True, True, True, True)
+    End Sub
+
+    ''' <summary>
+    ''' 実行ボタンクリックイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub btnExecute_Click(sender As System.Object, e As System.EventArgs) Handles btnExecute.Click
+        Dim fromYmd As String = fromYmdBox.getADStr() 'from日付
+        Dim toYmd As String = toYmdBox.getADStr() 'to日付
+        If rbtnSuryo.Checked Then '数量順印刷
+
+
+        ElseIf rbtnKingak.Checked Then '金額順印刷
+
+
+        ElseIf rbtnNam.Checked Then '品名別／月別　仕入れ数量印刷
+            '対象仕入先、期間でSiireWテーブル作成
+            Dim siire As String = siireBox.Text
+            If siire = "" Then
+                MsgBox("仕入先を選択して下さい。", MsgBoxStyle.Exclamation)
+                Return
+            End If
+            initSiireW(siire, fromYmd, toYmd)
+
+            'データ取得
+            Dim cnn As New ADODB.Connection
+            cnn.Open(TopForm.DB_Drugs)
+            Dim rs As New ADODB.Recordset
+            Dim sql As String = "select * from SiireW order by Nam, Tanka"
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
+            If rs.RecordCount <= 0 Then
+                MsgBox("該当がありません。", MsgBoxStyle.Exclamation)
+                rs.Close()
+                cnn.Close()
+                Return
+            End If
+
+            '書き込みデータ作成
+            Dim dataList As New List(Of String(,))
+            Dim noCount As Integer = 0
+            Dim tmpNam As String = ""
+            Dim dataArray(39, 16) As String
+            Dim arrayRowIndex As Integer = -1
+            Dim kingak As Integer = 0
+            Dim suryo As Integer = 0
+            While Not rs.EOF
+                Dim nam As String = Util.checkDBNullValue(rs.Fields("Nam").Value)
+                If nam <> tmpNam Then
+                    '更新
+                    noCount += 1
+                    arrayRowIndex += 1
+                    kingak = 0
+                    suryo = 0
+                    tmpNam = nam
+                    If arrayRowIndex = 40 Then
+                        For i As Integer = 0 To 39
+                            For j As Integer = 2 To 16
+                                dataArray(i, j) = CInt(dataArray(i, j)).ToString("#,0")
+                                If dataArray(i, j) = "0" Then
+                                    dataArray(i, j) = ""
+                                End If
+                            Next
+                        Next
+                        dataList.Add(dataArray.Clone())
+                        Array.Clear(dataArray, 0, dataArray.Length)
+                        arrayRowIndex = 0
+                    End If
+
+                    dataArray(arrayRowIndex, 0) = noCount 'No.
+                    dataArray(arrayRowIndex, 1) = nam '品名
+                    dataArray(arrayRowIndex, 15) = rs.Fields("Tanka").Value '単価
+                End If
+
+                Dim monthNum As Integer = CInt(rs.Fields("Ymd").Value.ToString().Split("/")(1)) '月
+                Dim arrayColumnIndex As Integer = If(monthNum >= 4, monthNum - 2, monthNum + 10) '加算する列
+                dataArray(arrayRowIndex, arrayColumnIndex) = dataArray(arrayRowIndex, arrayColumnIndex) + rs.Fields("Suryo").Value
+
+                kingak += rs.Fields("Kingak").Value
+                suryo += rs.Fields("Suryo").Value
+                dataArray(arrayRowIndex, 16) = kingak '金額
+                dataArray(arrayRowIndex, 14) = suryo '数量
+
+                rs.MoveNext()
+            End While
+            For i As Integer = 0 To 39
+                For j As Integer = 2 To 16
+                    dataArray(i, j) = CInt(dataArray(i, j)).ToString("#,0")
+                    If dataArray(i, j) = "0" Then
+                        dataArray(i, j) = ""
+                    End If
+                Next
+            Next
+            dataList.Add(dataArray)
+
+            rs.Close()
+            cnn.Close()
+
+            'エクセル準備
+            Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+            Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+            Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(TopForm.excelFilePass)
+            Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("仕入明細改")
+            objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+            objExcel.ScreenUpdating = False
+
+            '共通部分
+            oSheet.Range("F2").Value = siire '仕入先
+            oSheet.Range("H2").Value = Util.convADStrToWarekiStr(fromYmd) & " ～ " & Util.convADStrToWarekiStr(toYmd) '期間
+            oSheet.Range("R2").Value = "1頁" 'ページ数
+
+            '必要枚数コピペ
+            Dim loopCount As Integer
+            If noCount Mod 40 = 0 Then
+                loopCount = noCount \ 40 - 2
+            Else
+                loopCount = noCount \ 40 - 1
+            End If
+            For i As Integer = 0 To loopCount
+                Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (46 + (45 * i))) 'ペースト先
+                oSheet.Rows("1:45").copy(xlPasteRange)
+                oSheet.HPageBreaks.Add(oSheet.Range("A" & (46 + (45 * i)))) '改ページ
+                oSheet.Range("R" & (47 + (45 * i))).Value = (i + 2) & "頁" 'ページ数
+            Next
+
+            'データ書き込み
+            For i As Integer = 0 To dataList.Count - 1
+                oSheet.Range("B" & (4 + (45 * i)), "R" & (43 + (45 * i))).Value = dataList(i)
+            Next
+
+            objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+            objExcel.ScreenUpdating = True
+
+            '変更保存確認ダイアログ非表示
+            objExcel.DisplayAlerts = False
+
+            '印刷
+            If TopForm.rbtnPrintout.Checked = True Then
+                oSheet.PrintOut()
+            ElseIf TopForm.rbtnPreview.Checked = True Then
+                objExcel.Visible = True
+                oSheet.PrintPreview(1)
+            End If
+
+            ' EXCEL解放
+            objExcel.Quit()
+            Marshal.ReleaseComObject(objWorkBook)
+            Marshal.ReleaseComObject(objExcel)
+            oSheet = Nothing
+            objWorkBook = Nothing
+            objExcel = Nothing
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' SiireWテーブル作成
+    ''' </summary>
+    ''' <param name="siire"></param>
+    ''' <remarks></remarks>
+    Private Sub initSiireW(siire As String, fromYmd As String, toYmd As String)
+        '既存データ削除
+        Dim cn As New ADODB.Connection()
+        cn.Open(TopForm.DB_Drugs)
+        Dim cmd As New ADODB.Command()
+        cmd.ActiveConnection = cn
+        cmd.CommandText = "delete from SiireW"
+        cmd.Execute()
+
+        '仕入先データ取得
+        Dim sql As String = "select * from SiireD where Siire = '" & siire & "' and ('" & fromYmd & "' <= Ymd and Ymd <= '" & toYmd & "')"
+        Dim rsD As New ADODB.Recordset()
+        rsD.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+        If rsD.RecordCount <= 0 Then
+            rsD.Close()
+            cn.Close()
+            Return
+        End If
+
+        'SiireWテーブルに登録
+        Dim tmpNam As String = ""
+        Dim rsW As New ADODB.Recordset()
+        rsW.Open("SiireW", cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockPessimistic)
+        While Not rsD.EOF
+            '品名の空白を削除
+            Dim nam As String = Util.checkDBNullValue(rsD.Fields("Nam").Value).Replace(" ", "").Replace("　", "")
+
+            rsW.AddNew()
+            rsW.Fields("autono").Value = rsD.Fields("autono").Value
+            rsW.Fields("Ymd").Value = Util.checkDBNullValue(rsD.Fields("Ymd").Value)
+            rsW.Fields("Siire").Value = Util.checkDBNullValue(rsD.Fields("Siire").Value)
+            rsW.Fields("Denno").Value = Util.checkDBNullValue(rsD.Fields("Denno").Value)
+            rsW.Fields("Cod").Value = Util.checkDBNullValue(rsD.Fields("Cod").Value)
+            rsW.Fields("Nam").Value = nam
+            rsW.Fields("Suryo").Value = rsD.Fields("Suryo").Value
+            rsW.Fields("Tanka").Value = rsD.Fields("Tanka").Value
+            rsW.Fields("Kingak").Value = rsD.Fields("Kingak").Value
+            rsW.Fields("Zei").Value = rsD.Fields("Zei").Value
+            rsW.Fields("Gokei").Value = rsD.Fields("Gokei").Value
+            tmpNam = nam
+            rsD.MoveNext()
+        End While
+        rsW.Update()
+        rsW.Close()
+        rsD.Close()
+        cn.Close()
+
+    End Sub
 End Class

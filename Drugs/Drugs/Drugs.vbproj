@@ -175,6 +175,9 @@
     <EmbeddedResource Include="仕入状況.resx">
       <DependentUpon>仕入状況.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="仕入集計.resx">
+      <DependentUpon>仕入集計.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Application.myapp">
