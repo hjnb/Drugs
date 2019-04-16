@@ -173,11 +173,27 @@ Drugs
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.formatNum(System.Double)">
+	<summary>
+ パーセント表記の変換処理
+ </summary>
+	<param name="calcResult"></param>
+	<returns></returns>
+	<remarks></remarks>
 </member><member name="M:Drugs.仕入集計.initSiireW(System.String,System.String,System.String)">
 	<summary>
  SiireWテーブル作成
  </summary>
-	<param name="siire"></param>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<param name="siire">仕入先</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.initBestW(System.String,System.String)">
+	<summary>
+ BestWテーブル作成
+ </summary>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
 	<remarks></remarks>
 </member><member name="T:Drugs.仕入品名検索.dgvRowHeaderCell">
 	<summary>
