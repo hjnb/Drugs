@@ -856,8 +856,25 @@ Public Class 仕入データ入力
         End If
 
         '書き込みデータ作成
-        '
-        '
+        Dim dataList As New List(Of String(,))
+        Dim dataArray(61, 8) As String
+        Dim tmpYmd As String = ""
+        Dim tmpDenno As String = ""
+        Dim tmpSiire As String = ""
+        Dim denGokei As Integer = 0
+        Dim dateGokei As Integer = 0
+        Dim siireGokei As Integer = 0
+        While Not rs.EOF
+            Dim siire As String = Util.checkDBNullValue(rs.Fields("Siire").Value)
+            Dim ymd As String = Util.checkDBNullValue(rs.Fields("Ymd").Value)
+            Dim denno As String = Util.checkDBNullValue(rs.Fields("Denno").Value)
+            If denno <> tmpDenno Then
+
+            End If
+
+            rs.MoveNext()
+        End While
+
 
 
 
