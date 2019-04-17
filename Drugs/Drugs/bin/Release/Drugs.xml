@@ -414,9 +414,23 @@ Drugs
 	<param name="sender"></param>
 	<param name="e"></param>
 	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSearch_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ データグリッドビュー（右上）cellFormattingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
 </member><member name="M:Drugs.仕入データ入力.dgvSearch_CellMouseClick(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
 	<summary>
  データグリッドビュー（右上）セルマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSiire_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ データグリッドビュー（下）cellFormattingイベント
  </summary>
 	<param name="sender"></param>
 	<param name="e"></param>

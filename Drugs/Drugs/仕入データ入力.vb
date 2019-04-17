@@ -1,4 +1,6 @@
 ﻿Imports System.Data.OleDb
+Imports Microsoft.Office.Interop
+Imports System.Runtime.InteropServices
 
 Public Class 仕入データ入力
 
@@ -217,7 +219,15 @@ Public Class 仕入データ入力
         Dim da As OleDbDataAdapter = New OleDbDataAdapter()
         Dim ds As DataSet = New DataSet()
         da.Fill(ds, rs, "Search")
-        dgvSearch.DataSource = ds.Tables("Search")
+        Dim dt As DataTable = ds.Tables("Search")
+        If dt.Rows.Count >= 2 Then
+            For i As Integer = dt.Rows.Count - 1 To 1 Step -1
+                If dt.Rows(i).Item("Nam") = dt.Rows(i - 1).Item("Nam") Then
+                    dt.Rows(i).Delete()
+                End If
+            Next
+        End If
+        dgvSearch.DataSource = dt
         cnn.Close()
 
         '幅設定等
@@ -416,6 +426,20 @@ Public Class 仕入データ入力
     End Sub
 
     ''' <summary>
+    ''' データグリッドビュー（右上）cellFormattingイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSearch_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles dgvSearch.CellFormatting
+        '日付列の値を和暦に変換
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex = 0 Then
+            e.Value = Util.convADStrToWarekiStr(e.Value)
+            e.FormattingApplied = True
+        End If
+    End Sub
+
+    ''' <summary>
     ''' データグリッドビュー（右上）セルマウスクリックイベント
     ''' </summary>
     ''' <param name="sender"></param>
@@ -435,6 +459,20 @@ Public Class 仕入データ入力
             '数量を1でセット
             suryoBox.Text = "1"
             suryoBox.Focus()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' データグリッドビュー（下）cellFormattingイベント
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    ''' <remarks></remarks>
+    Private Sub dgvSiire_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles dgvSiire.CellFormatting
+        '日付列の値を和暦に変換
+        If e.RowIndex >= 0 AndAlso e.ColumnIndex = 1 Then
+            e.Value = Util.convADStrToWarekiStr(e.Value)
+            e.FormattingApplied = True
         End If
     End Sub
 
@@ -841,12 +879,14 @@ Public Class 仕入データ入力
         Dim daysInMonth As Integer = DateTime.DaysInMonth(year, month) '月の日数
         Dim fromYmd As String = ym & "/01" 'from日付
         Dim toYmd As String = ym & "/" & daysInMonth 'to日付
+        Dim wareki As String = Util.convADStrToWarekiStr(fromYmd)
+        Dim ymFormattedStr As String = Util.getKanji(wareki) & " " & CInt(wareki.Substring(1, 2)) & " 年 " & CInt(wareki.Split("/")(1)) & " 月"
 
         '対象年月のデータ取得
         Dim cn As New ADODB.Connection()
         cn.Open(TopForm.DB_Drugs)
         Dim rs As New ADODB.Recordset
-        Dim sql As String = "select * from SiireD where ('" & fromYmd & "' <= Ymd and Ymd <= '" & toYmd & "') order by Siire, Ymd, Denno"
+        Dim sql As String = "select * from SiireD where ('" & fromYmd & "' <= Ymd and Ymd <= '" & toYmd & "') order by Siire, Ymd, Denno,autono"
         rs.Open(sql, cn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
         If rs.RecordCount <= 0 Then
             rs.Close()
@@ -857,26 +897,440 @@ Public Class 仕入データ入力
 
         '書き込みデータ作成
         Dim dataList As New List(Of String(,))
-        Dim dataArray(61, 8) As String
+        Dim dataArray(63, 8) As String
+        Dim rowIndex As Integer = 0
         Dim tmpYmd As String = ""
         Dim tmpDenno As String = ""
         Dim tmpSiire As String = ""
-        Dim denGokei As Integer = 0
-        Dim dateGokei As Integer = 0
-        Dim siireGokei As Integer = 0
+        Dim denGokei() As Integer = {0, 0, 0}
+        Dim dateGokei() As Integer = {0, 0, 0}
+        Dim siireGokei() As Integer = {0, 0, 0}
+        Dim page As Integer = 0
         While Not rs.EOF
-            Dim siire As String = Util.checkDBNullValue(rs.Fields("Siire").Value)
-            Dim ymd As String = Util.checkDBNullValue(rs.Fields("Ymd").Value)
-            Dim denno As String = Util.checkDBNullValue(rs.Fields("Denno").Value)
-            If denno <> tmpDenno Then
-
+            If rowIndex = 64 Then
+                dataList.Add(dataArray.Clone())
+                Array.Clear(dataArray, 0, dataArray.Length)
+                page += 1
+                'ヘッダーテキスト部分作成
+                dataArray(0, 0) = "仕入先:"
+                dataArray(0, 1) = tmpSiire
+                dataArray(0, 4) = ymFormattedStr
+                dataArray(0, 8) = page & " 頁"
+                dataArray(1, 0) = "納入日"
+                dataArray(1, 1) = "伝票No."
+                dataArray(1, 2) = "ｺｰﾄﾞ"
+                dataArray(1, 3) = "薬品名"
+                dataArray(1, 4) = "数量"
+                dataArray(1, 5) = "購入価"
+                dataArray(1, 6) = "合計"
+                dataArray(1, 7) = "消費税"
+                dataArray(1, 8) = "税込合計"
+                rowIndex = 2
             End If
+
+            Dim siire As String = Util.checkDBNullValue(rs.Fields("Siire").Value)
+            Dim ymd As String = Util.convADStrToWarekiStr(Util.checkDBNullValue(rs.Fields("Ymd").Value))
+            Dim denno As String = Util.checkDBNullValue(rs.Fields("Denno").Value)
+            Dim cod As String = Util.checkDBNullValue(rs.Fields("Cod").Value)
+            Dim nam As String = Util.checkDBNullValue(rs.Fields("Nam").Value)
+            Dim suryo As Integer = rs.Fields("Suryo").Value
+            Dim tanka As Integer = rs.Fields("Tanka").Value
+            Dim kingak As Integer = rs.Fields("Kingak").Value
+            Dim zei As Integer = rs.Fields("Zei").Value
+            Dim gokei As Integer = rs.Fields("Gokei").Value
+            If siire <> tmpSiire Then '仕入先が変わる場合、伝票計データと納入日計データと仕入先計データ追加
+                page += 1
+                If page = 1 Then
+                    'ヘッダーテキスト部分作成
+                    dataArray(0, 0) = "仕入先:"
+                    dataArray(0, 1) = siire
+                    dataArray(0, 4) = ymFormattedStr
+                    dataArray(0, 8) = page & " 頁"
+                    dataArray(1, 0) = "納入日"
+                    dataArray(1, 1) = "伝票No."
+                    dataArray(1, 2) = "ｺｰﾄﾞ"
+                    dataArray(1, 3) = "薬品名"
+                    dataArray(1, 4) = "数量"
+                    dataArray(1, 5) = "購入価"
+                    dataArray(1, 6) = "合計"
+                    dataArray(1, 7) = "消費税"
+                    dataArray(1, 8) = "税込合計"
+                    rowIndex = 2
+
+                    tmpSiire = siire
+                    tmpYmd = ymd
+                    tmpDenno = denno
+                Else
+                    '伝票計データ追加
+                    dataArray(rowIndex, 3) = " * 伝票計 * " & tmpDenno
+                    dataArray(rowIndex, 6) = denGokei(0)
+                    dataArray(rowIndex, 7) = denGokei(1)
+                    dataArray(rowIndex, 8) = denGokei(2)
+
+                    '更新
+                    rowIndex += 1
+                    tmpDenno = denno
+                    denGokei(0) = 0
+                    denGokei(1) = 0
+                    denGokei(2) = 0
+
+                    If rowIndex = 64 Then
+                        dataList.Add(dataArray.Clone())
+                        Array.Clear(dataArray, 0, dataArray.Length)
+                        page += 1
+                        'ヘッダーテキスト部分作成
+                        dataArray(0, 0) = "仕入先:"
+                        dataArray(0, 1) = tmpSiire
+                        dataArray(0, 4) = ymFormattedStr
+                        dataArray(0, 8) = page & " 頁"
+                        dataArray(1, 0) = "納入日"
+                        dataArray(1, 1) = "伝票No."
+                        dataArray(1, 2) = "ｺｰﾄﾞ"
+                        dataArray(1, 3) = "薬品名"
+                        dataArray(1, 4) = "数量"
+                        dataArray(1, 5) = "購入価"
+                        dataArray(1, 6) = "合計"
+                        dataArray(1, 7) = "消費税"
+                        dataArray(1, 8) = "税込合計"
+                        rowIndex = 2
+                    End If
+
+                    '納入日計データ追加
+                    dataArray(rowIndex, 3) = " * * 納入日計 * * " & tmpYmd
+                    dataArray(rowIndex, 6) = dateGokei(0)
+                    dataArray(rowIndex, 7) = dateGokei(1)
+                    dataArray(rowIndex, 8) = dateGokei(2)
+
+                    '更新
+                    rowIndex += 1
+                    tmpYmd = ymd
+                    dateGokei(0) = 0
+                    dateGokei(1) = 0
+                    dateGokei(2) = 0
+
+                    If rowIndex = 64 Then
+                        dataList.Add(dataArray.Clone())
+                        Array.Clear(dataArray, 0, dataArray.Length)
+                        page += 1
+                        'ヘッダーテキスト部分作成
+                        dataArray(0, 0) = "仕入先:"
+                        dataArray(0, 1) = tmpSiire
+                        dataArray(0, 4) = ymFormattedStr
+                        dataArray(0, 8) = page & " 頁"
+                        dataArray(1, 0) = "納入日"
+                        dataArray(1, 1) = "伝票No."
+                        dataArray(1, 2) = "ｺｰﾄﾞ"
+                        dataArray(1, 3) = "薬品名"
+                        dataArray(1, 4) = "数量"
+                        dataArray(1, 5) = "購入価"
+                        dataArray(1, 6) = "合計"
+                        dataArray(1, 7) = "消費税"
+                        dataArray(1, 8) = "税込合計"
+                        rowIndex = 2
+                    End If
+
+                    '仕入先計データ追加
+                    dataArray(rowIndex, 3) = " * * * 仕入先計 * * * " & tmpSiire
+                    dataArray(rowIndex, 6) = siireGokei(0)
+                    dataArray(rowIndex, 7) = siireGokei(1)
+                    dataArray(rowIndex, 8) = siireGokei(2)
+
+                    '更新
+                    rowIndex += 1
+                    tmpSiire = siire
+                    siireGokei(0) = 0
+                    siireGokei(1) = 0
+                    siireGokei(2) = 0
+
+                    '
+                    dataList.Add(dataArray.Clone())
+                    Array.Clear(dataArray, 0, dataArray.Length)
+
+                    'ヘッダーテキスト部分作成
+                    dataArray(0, 0) = "仕入先:"
+                    dataArray(0, 1) = siire
+                    dataArray(0, 4) = ymFormattedStr
+                    dataArray(0, 8) = page & " 頁"
+                    dataArray(1, 0) = "納入日"
+                    dataArray(1, 1) = "伝票No."
+                    dataArray(1, 2) = "ｺｰﾄﾞ"
+                    dataArray(1, 3) = "薬品名"
+                    dataArray(1, 4) = "数量"
+                    dataArray(1, 5) = "購入価"
+                    dataArray(1, 6) = "合計"
+                    dataArray(1, 7) = "消費税"
+                    dataArray(1, 8) = "税込合計"
+                    rowIndex = 2
+                End If
+            ElseIf ymd <> tmpYmd Then '日付が変わる場合、伝票計データと納入日計データ追加
+                '伝票計データ追加
+                dataArray(rowIndex, 3) = " * 伝票計 * " & tmpDenno
+                dataArray(rowIndex, 6) = denGokei(0)
+                dataArray(rowIndex, 7) = denGokei(1)
+                dataArray(rowIndex, 8) = denGokei(2)
+
+                '更新
+                rowIndex += 1
+                tmpDenno = denno
+                denGokei(0) = 0
+                denGokei(1) = 0
+                denGokei(2) = 0
+
+                If rowIndex = 64 Then
+                    dataList.Add(dataArray.Clone())
+                    Array.Clear(dataArray, 0, dataArray.Length)
+                    page += 1
+                    'ヘッダーテキスト部分作成
+                    dataArray(0, 0) = "仕入先:"
+                    dataArray(0, 1) = tmpSiire
+                    dataArray(0, 4) = ymFormattedStr
+                    dataArray(0, 8) = page & " 頁"
+                    dataArray(1, 0) = "納入日"
+                    dataArray(1, 1) = "伝票No."
+                    dataArray(1, 2) = "ｺｰﾄﾞ"
+                    dataArray(1, 3) = "薬品名"
+                    dataArray(1, 4) = "数量"
+                    dataArray(1, 5) = "購入価"
+                    dataArray(1, 6) = "合計"
+                    dataArray(1, 7) = "消費税"
+                    dataArray(1, 8) = "税込合計"
+                    rowIndex = 2
+                End If
+
+                '納入日計データ追加
+                dataArray(rowIndex, 3) = " * * 納入日計 * * " & tmpYmd
+                dataArray(rowIndex, 6) = dateGokei(0)
+                dataArray(rowIndex, 7) = dateGokei(1)
+                dataArray(rowIndex, 8) = dateGokei(2)
+
+                '更新
+                rowIndex += 1
+                tmpYmd = ymd
+                dateGokei(0) = 0
+                dateGokei(1) = 0
+                dateGokei(2) = 0
+
+                If rowIndex = 64 Then
+                    dataList.Add(dataArray.Clone())
+                    Array.Clear(dataArray, 0, dataArray.Length)
+                    page += 1
+                    'ヘッダーテキスト部分作成
+                    dataArray(0, 0) = "仕入先:"
+                    dataArray(0, 1) = tmpSiire
+                    dataArray(0, 4) = ymFormattedStr
+                    dataArray(0, 8) = page & " 頁"
+                    dataArray(1, 0) = "納入日"
+                    dataArray(1, 1) = "伝票No."
+                    dataArray(1, 2) = "ｺｰﾄﾞ"
+                    dataArray(1, 3) = "薬品名"
+                    dataArray(1, 4) = "数量"
+                    dataArray(1, 5) = "購入価"
+                    dataArray(1, 6) = "合計"
+                    dataArray(1, 7) = "消費税"
+                    dataArray(1, 8) = "税込合計"
+                    rowIndex = 2
+                End If
+            ElseIf denno <> tmpDenno Then '伝票No.が変わる場合、伝票計データ追加
+                '伝票計データ追加
+                dataArray(rowIndex, 3) = " * 伝票計 * " & tmpDenno
+                dataArray(rowIndex, 6) = denGokei(0)
+                dataArray(rowIndex, 7) = denGokei(1)
+                dataArray(rowIndex, 8) = denGokei(2)
+
+                '更新
+                rowIndex += 1
+                tmpDenno = denno
+                denGokei(0) = 0
+                denGokei(1) = 0
+                denGokei(2) = 0
+
+                If rowIndex = 64 Then
+                    dataList.Add(dataArray.Clone())
+                    Array.Clear(dataArray, 0, dataArray.Length)
+                    page += 1
+                    'ヘッダーテキスト部分作成
+                    dataArray(0, 0) = "仕入先:"
+                    dataArray(0, 1) = tmpSiire
+                    dataArray(0, 4) = ymFormattedStr
+                    dataArray(0, 8) = page & " 頁"
+                    dataArray(1, 0) = "納入日"
+                    dataArray(1, 1) = "伝票No."
+                    dataArray(1, 2) = "ｺｰﾄﾞ"
+                    dataArray(1, 3) = "薬品名"
+                    dataArray(1, 4) = "数量"
+                    dataArray(1, 5) = "購入価"
+                    dataArray(1, 6) = "合計"
+                    dataArray(1, 7) = "消費税"
+                    dataArray(1, 8) = "税込合計"
+                    rowIndex = 2
+                End If
+            End If
+            dataArray(rowIndex, 0) = ymd '納入日
+            dataArray(rowIndex, 1) = denno '伝票No
+            dataArray(rowIndex, 2) = cod 'コード
+            dataArray(rowIndex, 3) = nam '薬品名
+            dataArray(rowIndex, 4) = suryo '数量
+            dataArray(rowIndex, 5) = tanka '購入価
+            dataArray(rowIndex, 6) = kingak '合計
+            dataArray(rowIndex, 7) = zei '消費税
+            dataArray(rowIndex, 8) = gokei '税込合計
+
+            '値更新
+            rowIndex += 1
+            denGokei(0) += kingak
+            denGokei(1) += zei
+            denGokei(2) += gokei
+            dateGokei(0) += kingak
+            dateGokei(1) += zei
+            dateGokei(2) += gokei
+            siireGokei(0) += kingak
+            siireGokei(1) += zei
+            siireGokei(2) += gokei
 
             rs.MoveNext()
         End While
+        If rowIndex = 64 Then
+            dataList.Add(dataArray.Clone())
+            Array.Clear(dataArray, 0, dataArray.Length)
+            page += 1
+            'ヘッダーテキスト部分作成
+            dataArray(0, 0) = "仕入先:"
+            dataArray(0, 1) = tmpSiire
+            dataArray(0, 4) = ymFormattedStr
+            dataArray(0, 8) = page & " 頁"
+            dataArray(1, 0) = "納入日"
+            dataArray(1, 1) = "伝票No."
+            dataArray(1, 2) = "ｺｰﾄﾞ"
+            dataArray(1, 3) = "薬品名"
+            dataArray(1, 4) = "数量"
+            dataArray(1, 5) = "購入価"
+            dataArray(1, 6) = "合計"
+            dataArray(1, 7) = "消費税"
+            dataArray(1, 8) = "税込合計"
+            rowIndex = 2
+        End If
+        '伝票計データ追加
+        dataArray(rowIndex, 3) = " * 伝票計 * " & tmpDenno
+        dataArray(rowIndex, 6) = denGokei(0)
+        dataArray(rowIndex, 7) = denGokei(1)
+        dataArray(rowIndex, 8) = denGokei(2)
+        rowIndex += 1
 
+        If rowIndex = 64 Then
+            dataList.Add(dataArray.Clone())
+            Array.Clear(dataArray, 0, dataArray.Length)
+            page += 1
+            'ヘッダーテキスト部分作成
+            dataArray(0, 0) = "仕入先:"
+            dataArray(0, 1) = tmpSiire
+            dataArray(0, 4) = ymFormattedStr
+            dataArray(0, 8) = page & " 頁"
+            dataArray(1, 0) = "納入日"
+            dataArray(1, 1) = "伝票No."
+            dataArray(1, 2) = "ｺｰﾄﾞ"
+            dataArray(1, 3) = "薬品名"
+            dataArray(1, 4) = "数量"
+            dataArray(1, 5) = "購入価"
+            dataArray(1, 6) = "合計"
+            dataArray(1, 7) = "消費税"
+            dataArray(1, 8) = "税込合計"
+            rowIndex = 2
+        End If
 
+        '納入日計データ追加
+        dataArray(rowIndex, 3) = " * * 納入日計 * * " & tmpYmd
+        dataArray(rowIndex, 6) = dateGokei(0)
+        dataArray(rowIndex, 7) = dateGokei(1)
+        dataArray(rowIndex, 8) = dateGokei(2)
+        rowIndex += 1
 
+        If rowIndex = 64 Then
+            dataList.Add(dataArray.Clone())
+            Array.Clear(dataArray, 0, dataArray.Length)
+            page += 1
+            'ヘッダーテキスト部分作成
+            dataArray(0, 0) = "仕入先:"
+            dataArray(0, 1) = tmpSiire
+            dataArray(0, 4) = ymFormattedStr
+            dataArray(0, 8) = page & " 頁"
+            dataArray(1, 0) = "納入日"
+            dataArray(1, 1) = "伝票No."
+            dataArray(1, 2) = "ｺｰﾄﾞ"
+            dataArray(1, 3) = "薬品名"
+            dataArray(1, 4) = "数量"
+            dataArray(1, 5) = "購入価"
+            dataArray(1, 6) = "合計"
+            dataArray(1, 7) = "消費税"
+            dataArray(1, 8) = "税込合計"
+            rowIndex = 2
+        End If
+
+        '仕入先計データ追加
+        dataArray(rowIndex, 3) = " * * * 仕入先計 * * * " & tmpSiire
+        dataArray(rowIndex, 6) = siireGokei(0)
+        dataArray(rowIndex, 7) = siireGokei(1)
+        dataArray(rowIndex, 8) = siireGokei(2)
+        dataList.Add(dataArray.Clone())
+
+        rs.Close()
+        cn.Close()
+
+        '作成データから"0"を削除
+        For i As Integer = 0 To dataList.Count - 1
+            For j As Integer = 2 To 63
+                For k As Integer = 5 To 8
+                    If dataList(i)(j, k) <> "" Then
+                        dataList(i)(j, k) = CInt(dataList(i)(j, k)).ToString("#,0")
+                    End If
+                    If k = 7 AndAlso dataList(i)(j, k) = "0" Then
+                        dataList(i)(j, k) = ""
+                    End If
+                Next
+
+            Next
+        Next
+
+        'エクセル準備
+        Dim objExcel As Excel.Application = CreateObject("Excel.Application")
+        Dim objWorkBooks As Excel.Workbooks = objExcel.Workbooks
+        Dim objWorkBook As Excel.Workbook = objWorkBooks.Open(TopForm.excelFilePass)
+        Dim oSheet As Excel.Worksheet = objWorkBook.Worksheets("仕入改")
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationManual
+        objExcel.ScreenUpdating = False
+
+        '必要枚数コピペ
+        For i As Integer = 0 To dataList.Count - 2
+            Dim xlPasteRange As Excel.Range = oSheet.Range("A" & (69 + (68 * i))) 'ペースト先
+            oSheet.Rows("1:68").copy(xlPasteRange)
+            oSheet.HPageBreaks.Add(oSheet.Range("A" & (69 + (68 * i)))) '改ページ
+        Next
+
+        'データ書き込み
+        For i As Integer = 0 To dataList.Count - 1
+            oSheet.Range("B" & (3 + 68 * i), "J" & (66 + 68 * i)).Value = dataList(i)
+        Next
+
+        objExcel.Calculation = Excel.XlCalculation.xlCalculationAutomatic
+        objExcel.ScreenUpdating = True
+
+        '変更保存確認ダイアログ非表示
+        objExcel.DisplayAlerts = False
+
+        '印刷
+        If TopForm.rbtnPrintout.Checked = True Then
+            oSheet.PrintOut()
+        ElseIf TopForm.rbtnPreview.Checked = True Then
+            objExcel.Visible = True
+            oSheet.PrintPreview(1)
+        End If
+
+        ' EXCEL解放
+        objExcel.Quit()
+        Marshal.ReleaseComObject(objWorkBook)
+        Marshal.ReleaseComObject(objExcel)
+        oSheet = Nothing
+        objWorkBook = Nothing
+        objExcel = Nothing
 
     End Sub
 End Class
