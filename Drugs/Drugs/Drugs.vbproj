@@ -178,6 +178,9 @@
     <EmbeddedResource Include="仕入集計.resx">
       <DependentUpon>仕入集計.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ＤＢ整理.resx">
+      <DependentUpon>ＤＢ整理.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Application.myapp">
