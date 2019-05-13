@@ -101,6 +101,7 @@ Partial Class TopForm
         Me.btnZaikoKonyu.TabIndex = 6
         Me.btnZaikoKonyu.Text = "在庫購入価"
         Me.btnZaikoKonyu.UseVisualStyleBackColor = False
+        Me.btnZaikoKonyu.Visible = False
         '
         'btnZaikoNyuryoku
         '
