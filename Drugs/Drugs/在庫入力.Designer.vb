@@ -41,11 +41,13 @@ Partial Class 在庫入力
         Me.DataGridView3 = New System.Windows.Forms.DataGridView()
         Me.DataGridView4 = New System.Windows.Forms.DataGridView()
         Me.DataGridView5 = New System.Windows.Forms.DataGridView()
+        Me.DataGridView6 = New System.Windows.Forms.DataGridView()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView5, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.DataGridView6, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'YmdBox1
@@ -195,48 +197,72 @@ Partial Class 在庫入力
         '
         'DataGridView2
         '
+        Me.DataGridView2.AllowUserToAddRows = False
+        Me.DataGridView2.AllowUserToDeleteRows = False
+        Me.DataGridView2.AllowUserToResizeColumns = False
         Me.DataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView2.Location = New System.Drawing.Point(917, 108)
+        Me.DataGridView2.Location = New System.Drawing.Point(792, 192)
         Me.DataGridView2.Name = "DataGridView2"
-        Me.DataGridView2.Size = New System.Drawing.Size(281, 170)
+        Me.DataGridView2.Size = New System.Drawing.Size(10, 10)
         Me.DataGridView2.TabIndex = 13
         '
         'DataGridView3
         '
+        Me.DataGridView3.AllowUserToAddRows = False
+        Me.DataGridView3.AllowUserToDeleteRows = False
+        Me.DataGridView3.AllowUserToResizeColumns = False
         Me.DataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView3.Location = New System.Drawing.Point(917, 307)
+        Me.DataGridView3.Location = New System.Drawing.Point(850, 192)
         Me.DataGridView3.Name = "DataGridView3"
-        Me.DataGridView3.Size = New System.Drawing.Size(298, 116)
+        Me.DataGridView3.Size = New System.Drawing.Size(10, 10)
         Me.DataGridView3.TabIndex = 14
         '
         'DataGridView4
         '
+        Me.DataGridView4.AllowUserToAddRows = False
+        Me.DataGridView4.AllowUserToDeleteRows = False
+        Me.DataGridView4.AllowUserToResizeColumns = False
         Me.DataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView4.Location = New System.Drawing.Point(923, 449)
+        Me.DataGridView4.Location = New System.Drawing.Point(808, 192)
         Me.DataGridView4.Name = "DataGridView4"
-        Me.DataGridView4.Size = New System.Drawing.Size(262, 139)
+        Me.DataGridView4.Size = New System.Drawing.Size(10, 10)
         Me.DataGridView4.TabIndex = 15
         '
         'DataGridView5
         '
+        Me.DataGridView5.AllowUserToAddRows = False
+        Me.DataGridView5.AllowUserToDeleteRows = False
+        Me.DataGridView5.AllowUserToResizeColumns = False
         Me.DataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView5.Location = New System.Drawing.Point(930, 622)
+        Me.DataGridView5.Location = New System.Drawing.Point(834, 192)
         Me.DataGridView5.Name = "DataGridView5"
-        Me.DataGridView5.Size = New System.Drawing.Size(254, 106)
+        Me.DataGridView5.Size = New System.Drawing.Size(10, 10)
         Me.DataGridView5.TabIndex = 16
+        '
+        'DataGridView6
+        '
+        Me.DataGridView6.AllowUserToAddRows = False
+        Me.DataGridView6.AllowUserToDeleteRows = False
+        Me.DataGridView6.AllowUserToResizeColumns = False
+        Me.DataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DataGridView6.Location = New System.Drawing.Point(870, 192)
+        Me.DataGridView6.Name = "DataGridView6"
+        Me.DataGridView6.Size = New System.Drawing.Size(10, 10)
+        Me.DataGridView6.TabIndex = 20
         '
         '在庫入力
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 12.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1306, 766)
+        Me.ClientSize = New System.Drawing.Size(1466, 766)
+        Me.Controls.Add(Me.DataGridView1)
+        Me.Controls.Add(Me.DataGridView6)
         Me.Controls.Add(Me.DataGridView5)
         Me.Controls.Add(Me.DataGridView4)
         Me.Controls.Add(Me.DataGridView3)
         Me.Controls.Add(Me.DataGridView2)
         Me.Controls.Add(Me.txtKome)
         Me.Controls.Add(Me.lblNam)
-        Me.Controls.Add(Me.DataGridView1)
         Me.Controls.Add(Me.btnKinyuuhyou)
         Me.Controls.Add(Me.btnGetumatusyuukei)
         Me.Controls.Add(Me.btnTanaorosi)
@@ -254,6 +280,7 @@ Partial Class 在庫入力
         CType(Me.DataGridView3, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView4, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView5, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.DataGridView6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -275,4 +302,5 @@ Partial Class 在庫入力
     Friend WithEvents DataGridView3 As System.Windows.Forms.DataGridView
     Friend WithEvents DataGridView4 As System.Windows.Forms.DataGridView
     Friend WithEvents DataGridView5 As System.Windows.Forms.DataGridView
+    Friend WithEvents DataGridView6 As System.Windows.Forms.DataGridView
 End Class
