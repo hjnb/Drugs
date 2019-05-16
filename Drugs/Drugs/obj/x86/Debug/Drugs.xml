@@ -6,7 +6,180 @@ Drugs
 </name>
 </assembly>
 <members>
-<member name="P:Drugs.My.Resources.Resources.ResourceManager">
+<member name="T:Drugs.仕入データ入力.dgvRowHeaderCell">
+	<summary>
+ 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.仕入データ入力_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.initTaxBox">
+	<summary>
+ 消費税率ボックス初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.initSiireBox">
+	<summary>
+ 仕入先ボックス初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.initInputTextBox">
+	<summary>
+ 入力テキストボックス初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.initDgvSearch">
+	<summary>
+ データグリッドビュー（右上）の初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.initDgvSiire">
+	<summary>
+ データグリッドビュー（下）の初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.displayDgvSearch(System.String,System.Int32)">
+	<summary>
+ 検索結果表示
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.displayDgvSiire(System.String)">
+	<summary>
+ 仕入データ表示
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.codBox_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ カナボックスkeyDownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.namBox_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ 品名ボックスkeyDownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.YmdBox_keyDownEnterOrDown(System.Object,System.EventArgs)">
+	<summary>
+ 日付ボックスでエンターキー押下時の処理
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSearch_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ データグリッドビュー（右上）cellFormattingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSearch_CellMouseClick(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
+	<summary>
+ データグリッドビュー（右上）セルマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSiire_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ データグリッドビュー（下）cellFormattingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSiire_CellMouseClick(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
+	<summary>
+ データグリッドビュー（下）セルマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSiire_CellPainting(System.Object,System.Windows.Forms.DataGridViewCellPaintingEventArgs)">
+	<summary>
+ CellPaintingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.textBox_Enter(System.Object,System.EventArgs)">
+	<summary>
+ 入力テキストボックスエンターイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.textBox_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ 入力テキストボックスマウスダウンイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.dgvSearch_keyDownEnter(System.Object,System.EventArgs)">
+	<summary>
+ データグリッドビュー右上でエンターキーkeyDownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.siireBox_MouseClick(System.Object,System.Windows.Forms.MouseEventArgs)">
+	<summary>
+ 仕入先ボックスマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.textBox_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ 入力テキストボックスkeydownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.btnAdd_Click(System.Object,System.EventArgs)">
+	<summary>
+ 追加ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.btnChange_Click(System.Object,System.EventArgs)">
+	<summary>
+ 変更ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.btnDelete_Click(System.Object,System.EventArgs)">
+	<summary>
+ 削除ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入データ入力.btnPrint_Click(System.Object,System.EventArgs)">
+	<summary>
+ 印刷ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.ＤＢ整理.btnExecute_Click(System.Object,System.EventArgs)">
+	<summary>
+ 実行ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="P:Drugs.My.Resources.Resources.ResourceManager">
 	<summary>
   Returns the cached ResourceManager instance used by this class.
 </summary>
@@ -19,6 +192,333 @@ Drugs
 	<summary>
   A strongly-typed resource class, for looking up localized strings, etc.
 </summary>
+</member><member name="T:Drugs.仕入品名検索.dgvRowHeaderCell">
+	<summary>
+ 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.initDenDateLabel">
+	<summary>
+ 伝票日付ラベル設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.initDgvSearchResult">
+	<summary>
+ データグリッドビュー初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.displaySearchResult(System.String)">
+	<summary>
+ 検索結果表示
+ </summary>
+	<param name="inputSearchText">検索文字列</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.btnExecute_Click(System.Object,System.EventArgs)">
+	<summary>
+ 実行ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.dgvSearchResult_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ CellFormattingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.dgvSearchResult_CellMouseClick(System.Object,System.Windows.Forms.DataGridViewCellMouseEventArgs)">
+	<summary>
+ セルマウスクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.dgvSearchResult_CellPainting(System.Object,System.Windows.Forms.DataGridViewCellPaintingEventArgs)">
+	<summary>
+ CellPaintingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.searchTextBox_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
+	<summary>
+ 検索文字列ボックスkeyDownイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入品名検索.btnPrint_Click(System.Object,System.EventArgs)">
+	<summary>
+ 印刷ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.EnableDoubleBuffering(System.Windows.Forms.Control)">
+	<summary>
+ コントロールのDoubleBufferedプロパティをTrueにする
+ </summary>
+	<param name="control">対象のコントロール</param>
+</member><member name="M:Drugs.Util.checkDBNullValue(System.Object)">
+	<summary>
+ dgvのセルの値がNullかチェック、Nullの場合空文字を返す
+ </summary>
+	<param name="dgvCellValue"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.convADStrToWarekiStr(System.String)">
+	<summary>
+ 西暦(yyyy/MM/dd)を和暦に変換
+ </summary>
+	<param name="adStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.convWarekiStrToADStr(System.String)">
+	<summary>
+ 和暦を西暦に変換
+ </summary>
+	<param name="warekiStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.getKanji(System.String)">
+	<summary>
+ 和暦の漢字を取得
+ </summary>
+	<param name="warekiStr"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.getIniString(System.String,System.String,System.String)">
+	<summary>
+ iniファイルから読み込み
+ </summary>
+	<param name="lpSection">セクション名</param>
+	<param name="lpKeyName">読み込むkey名</param>
+	<param name="lpFileName">iniファイルパス</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.Util.putIniString(System.String,System.String,System.String,System.String)">
+	<summary>
+ iniファイルへ書き込み
+ </summary>
+	<param name="lpSection">セクション名</param>
+	<param name="lpKeyName">書き込む対象のkey名</param>
+	<param name="lpValue">書き込む値</param>
+	<param name="lpFileName">iniファイルパス</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.TopForm_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.initPrintState">
+	<summary>
+ 印刷ラジオボタン初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.topPicture_Click(System.Object,System.EventArgs)">
+	<summary>
+ 画像クリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnSiireData_Click(System.Object,System.EventArgs)">
+	<summary>
+ 仕入データ入力ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnSiiresyukei_Click(System.Object,System.EventArgs)">
+	<summary>
+ 仕入集計ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnSiireJyokyo_Click(System.Object,System.EventArgs)">
+	<summary>
+ 仕入状況ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnSiirekensaku_Click(System.Object,System.EventArgs)">
+	<summary>
+ 仕入品名検索ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnZaikoM_Click(System.Object,System.EventArgs)">
+	<summary>
+ 在庫マスタボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnZaikoNyuryoku_Click(System.Object,System.EventArgs)">
+	<summary>
+ 在庫入力ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnZaikoKonyu_Click(System.Object,System.EventArgs)">
+	<summary>
+ 在庫購入価ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.TopForm.btnDB_Click(System.Object,System.EventArgs)">
+	<summary>
+ ＤＢ整理ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="T:Drugs.仕入状況.dgvRowHeaderCell">
+	<summary>
+ 行ヘッダーのカレントセルを表す三角マークを非表示に設定する為のクラス。
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.仕入状況_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initSiireBox">
+	<summary>
+ 仕入先ボックス初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initYmdBox">
+	<summary>
+ 日付ボックス初期値設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initDgvSiire">
+	<summary>
+ データグリッドビュー初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.displayNamList(System.String,System.String,System.String)">
+	<summary>
+ リスト表示
+ </summary>
+	<param name="siire">仕入先</param>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.displayDgvSiire(System.String,System.String,System.String)">
+	<summary>
+ 対象の品名の仕入状況表示
+ </summary>
+	<param name="nam">品名</param>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.initSiireW(System.String)">
+	<summary>
+ SiireWテーブル作成
+ </summary>
+	<param name="siire"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.siireBox_SelectedValueChanged(System.Object,System.EventArgs)">
+	<summary>
+ 仕入先ボックス値変更イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.namListBox_SelectedValueChanged(System.Object,System.EventArgs)">
+	<summary>
+ リスト選択値変更イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.dgvSiire_CellFormatting(System.Object,System.Windows.Forms.DataGridViewCellFormattingEventArgs)">
+	<summary>
+ cellFormatting
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.dgvSiire_CellPainting(System.Object,System.Windows.Forms.DataGridViewCellPaintingEventArgs)">
+	<summary>
+ CellPaintingイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入状況.btnDisplay_Click(System.Object,System.EventArgs)">
+	<summary>
+ 表示ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.仕入集計_Load(System.Object,System.EventArgs)">
+	<summary>
+ loadイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.initSiireBox">
+	<summary>
+ 仕入先ボックス初期設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.initYmdBox">
+	<summary>
+ 日付ボックス初期値設定
+ </summary>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.YmdBox_keyDownEnter(System.Object,System.EventArgs)">
+	<summary>
+ 日付ボックスエンターキー押下イベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.btnExecute_Click(System.Object,System.EventArgs)">
+	<summary>
+ 実行ボタンクリックイベント
+ </summary>
+	<param name="sender"></param>
+	<param name="e"></param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.formatNum(System.Double)">
+	<summary>
+ パーセント表記の変換処理
+ </summary>
+	<param name="calcResult"></param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.initSiireW(System.String,System.String,System.String)">
+	<summary>
+ SiireWテーブル作成
+ </summary>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<param name="siire">仕入先</param>
+	<remarks></remarks>
+</member><member name="M:Drugs.仕入集計.initBestW(System.String,System.String)">
+	<summary>
+ BestWテーブル作成
+ </summary>
+	<param name="fromYmd">from日付</param>
+	<param name="toYmd">to日付</param>
+	<remarks></remarks>
 </member>
 </members>
 </doc>
