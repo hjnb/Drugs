@@ -396,6 +396,8 @@ Public Class 仕入データ入力
             Else
                 Me.SelectNextControl(Me.ActiveControl, Not e.Shift, True, True, True)
             End If
+        ElseIf e.KeyCode = Keys.Up Then
+            dennoBox.Focus()
         End If
     End Sub
 
@@ -411,6 +413,8 @@ Public Class 仕入データ入力
             If inputStr <> "" Then
                 displayDgvSearch(inputStr, SEARCH_TYPE_NAM)
             End If
+        ElseIf e.KeyCode = Keys.Up Then
+            codBox.Focus()
         End If
     End Sub
 
@@ -581,6 +585,10 @@ Public Class 仕入データ入力
         End If
     End Sub
 
+    Private Sub siireBox_GotFocus(sender As Object, e As System.EventArgs) Handles siireBox.GotFocus
+        siireBox.DroppedDown = True
+    End Sub
+
     ''' <summary>
     ''' 仕入先ボックスマウスクリックイベント
     ''' </summary>
@@ -600,8 +608,17 @@ Public Class 仕入データ入力
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub textBox_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles siireBox.KeyDown, dennoBox.KeyDown, suryoBox.KeyDown, tankaBox.KeyDown
+        Dim name As String = sender.Name
         If e.KeyCode = Keys.Enter Then
             Me.SelectNextControl(Me.ActiveControl, Not e.Shift, True, True, True)
+        ElseIf e.KeyCode = Keys.Up Then
+            If name = "dennoBox" Then
+                siireBox.Focus()
+            ElseIf name = "suryoBox" Then
+                namBox.Focus()
+            ElseIf name = "tankaBox" Then
+                suryoBox.Focus()
+            End If
         End If
     End Sub
 
