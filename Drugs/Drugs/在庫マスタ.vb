@@ -3,7 +3,7 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Core
 Public Class 在庫マスタ
-
+    Private y As Integer = 0
     Private Sub 在庫マスタ_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
         YmdBox1.setADStr(Today.ToString("yyyy/MM/dd"))
@@ -15,52 +15,59 @@ Public Class 在庫マスタ
 
     End Sub
 
+    Private Sub DGV1Show(Optional zaiko As Integer = 0)
+        Dim Ym As String = YmdBox1.getADYmStr()
+        Dim Cn As New OleDbConnection(TopForm.DB_Drugs)
+        Dim SQLCm As OleDbCommand = Cn.CreateCommand
+        Dim Adapter As New OleDbDataAdapter(SQLCm)
+        Dim Table As New DataTable
+        SQLCm.CommandText = "select Zaiko as ｺｰﾄﾞ, Nam as 品名, Cod as カナ, Bunrui as 分類, Siire as 仕入先, Tani as 単位, Konyu as 購入価, Tanka as 単位単価, SokB as 薬品庫, YakB as 薬局, GaiB as 外来, ByoB as 病棟, [Text] as ﾒﾓ, SokT, YakT, GaiT, ByoT, Ym from ZaikoM WHERE Ym = '" & Ym & "' Order by Zaiko"
+        Adapter.Fill(Table)
+        DataGridView1.DataSource = Table
+
+        With DataGridView1
+            .RowHeadersWidth = 30
+            .Columns(0).Width = 45
+            .Columns(1).Width = 230
+            .Columns(2).Width = 35
+            .Columns(3).Width = 40
+            .Columns(4).Width = 50
+            .Columns(5).Width = 40
+            .Columns(6).Width = 50
+            .Columns(6).DefaultCellStyle.Format = "#,0"
+            .Columns(7).Width = 70
+            .Columns(7).DefaultCellStyle.Format = "#,0.00"
+            .Columns(8).Width = 50
+            .Columns(9).Width = 50
+            .Columns(10).Width = 50
+            .Columns(11).Width = 50
+            .Columns(12).Width = 130
+            .Columns(13).Width = 50
+            .Columns(14).Width = 50
+            .Columns(15).Width = 50
+            .Columns(16).Width = 50
+            .Columns(17).Visible = False
+        End With
+
+        For c As Integer = 0 To 16
+            If c = 1 OrElse c = 12 Then
+                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            ElseIf c = 5 OrElse c = 6 OrElse c = 7 Then
+                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            Else
+                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            End If
+        Next
+
+        DataGridView1.FirstDisplayedScrollingRowIndex = y
+    End Sub
+
     Private Sub 在庫マスタ_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         If Label22.Text = "0" AndAlso e.KeyCode = Keys.Enter Then
-            Dim Ym As String = YmdBox1.getADYmStr()
-            Dim Cn As New OleDbConnection(TopForm.DB_Drugs)
-            Dim SQLCm As OleDbCommand = Cn.CreateCommand
-            Dim Adapter As New OleDbDataAdapter(SQLCm)
-            Dim Table As New DataTable
-            SQLCm.CommandText = "select Zaiko as ｺｰﾄﾞ, Nam as 品名, Cod as カナ, Bunrui as 分類, Siire as 仕入先, Tani as 単位, Konyu as 購入価, Tanka as 単位単価, SokB as 薬品庫, YakB as 薬局, GaiB as 外来, ByoB as 病棟, [Text] as ﾒﾓ, SokT, YakT, GaiT, ByoT, Ym from ZaikoM WHERE Ym = '" & Ym & "' Order by Zaiko"
-            Adapter.Fill(Table)
-            DataGridView1.DataSource = Table
-
-            With DataGridView1
-                .RowHeadersWidth = 30
-                .Columns(0).Width = 45
-                .Columns(1).Width = 230
-                .Columns(2).Width = 35
-                .Columns(3).Width = 40
-                .Columns(4).Width = 50
-                .Columns(5).Width = 40
-                .Columns(6).Width = 50
-                .Columns(6).DefaultCellStyle.Format = "#,0"
-                .Columns(7).Width = 70
-                .Columns(7).DefaultCellStyle.Format = "#,0.00"
-                .Columns(8).Width = 50
-                .Columns(9).Width = 50
-                .Columns(10).Width = 50
-                .Columns(11).Width = 50
-                .Columns(12).Width = 130
-                .Columns(13).Width = 50
-                .Columns(14).Width = 50
-                .Columns(15).Width = 50
-                .Columns(16).Width = 50
-                .Columns(17).Visible = False
-            End With
-
-            For c As Integer = 0 To 16
-                If c = 1 OrElse c = 12 Then
-                    DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-                ElseIf c = 5 OrElse c = 6 OrElse c = 7 Then
-                    DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-                Else
-                    DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-                End If
-            Next
-
+            DGV1Show()
         End If
+
+        Dim find As Boolean = False
 
         Dim dgv1rowcount As Integer = DataGridView1.Rows.Count
         If dgv1rowcount > 0 Then
@@ -79,13 +86,47 @@ Public Class 在庫マスタ
                         txtGaiB.Text = DataGridView1(10, r).Value
                         txtByoB.Text = DataGridView1(11, r).Value
                         txtText.Text = DataGridView1(12, r).Value
+
+                        If System.Text.RegularExpressions.Regex.IsMatch(DataGridView1(0, r).Value.ToString, txtZaiko.Text) = True Then
+                            '見つかった場合は、その行に移動します。
+                            DataGridView1.Rows(r).Selected = True
+                            DataGridView1.FirstDisplayedScrollingRowIndex = r
+                            '見つかった時点で繰り返し処理を中止します。
+                            y = r
+                        End If
+
+                        find = True
+                        Exit For
                     End If
                 Next
+
+                If find = False Then
+                    txtNam.Text = ""
+                    txtCod.Text = ""
+                    txtBunrui.Text = ""
+                    cmbSiire.Text = ""
+                    txtTani.Text = ""
+                    txtKonyu.Text = ""
+                    lblTannka.Text = ""
+                    txtSokB.Text = ""
+                    txtYakB.Text = ""
+                    txtGaiB.Text = ""
+                    txtByoB.Text = ""
+                    txtText.Text = ""
+                End If
             End If
         End If
-        
 
         If txtKonyu.Focused = True AndAlso e.KeyCode = Keys.Enter Then
+            If txtTani.Text = "" Then
+                MsgBox("単位を入力してください")
+                txtTani.Focus()
+                Return
+            ElseIf txtKonyu.Text = "" Then
+                MsgBox("購入額を入力してください")
+                txtKonyu.Focus()
+                Return
+            End If
             lblTannka.Text = (Val(txtKonyu.Text) / Val(txtTani.Text)).ToString("0.00")
             Dim a() As String = lblTannka.Text.Split(".")
             lblTannka.Text = CInt(a(0)).ToString("#,0") & "." & a(1)
@@ -160,6 +201,14 @@ Public Class 在庫マスタ
                 strWork = strWork.Replace("5", "外用")
             ElseIf strWork = "9" Then
                 strWork = strWork.Replace("9", "その他")
+            ElseIf strWork = "内服" Then
+                strWork = strWork.Replace("内服", "内服")
+            ElseIf strWork = "注射" Then
+                strWork = strWork.Replace("注射", "注射")
+            ElseIf strWork = "外用" Then
+                strWork = strWork.Replace("外用", "外用")
+            ElseIf strWork = "その他" Then
+                strWork = strWork.Replace("その他", "その他")
             Else
                 MsgBox("正しく入力してください")
                 txtBunrui.Focus()
@@ -193,52 +242,6 @@ Public Class 在庫マスタ
         txtGaiB.Text = ""
         txtByoB.Text = ""
         txtText.Text = ""
-    End Sub
-
-    Private Sub FormUpdate()
-        Clear()
-
-        Dim Ym As String = YmdBox1.getADYmStr()
-        Dim Cn As New OleDbConnection(TopForm.DB_Drugs)
-        Dim SQLCm As OleDbCommand = Cn.CreateCommand
-        Dim Adapter As New OleDbDataAdapter(SQLCm)
-        Dim Table As New DataTable
-        SQLCm.CommandText = "select Zaiko as ｺｰﾄﾞ, Nam as 品名, Cod as カナ, Bunrui as 分類, Siire as 仕入先, Tani as 単位, Konyu as 購入価, Tanka as 単位単価, SokB as 薬品庫, YakB as 薬局, GaiB as 外来, ByoB as 病棟, [Text] as ﾒﾓ, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & Ym & "' Order by Zaiko"
-        Adapter.Fill(Table)
-        DataGridView1.DataSource = Table
-
-        With DataGridView1
-            .RowHeadersWidth = 30
-            .Columns(0).Width = 45
-            .Columns(1).Width = 230
-            .Columns(2).Width = 35
-            .Columns(3).Width = 40
-            .Columns(4).Width = 50
-            .Columns(5).Width = 40
-            .Columns(6).Width = 50
-            .Columns(6).DefaultCellStyle.Format = "#,0"
-            .Columns(7).Width = 70
-            .Columns(7).DefaultCellStyle.Format = "#,0.00"
-            .Columns(8).Width = 50
-            .Columns(9).Width = 50
-            .Columns(10).Width = 50
-            .Columns(11).Width = 50
-            .Columns(12).Width = 130
-            .Columns(13).Width = 50
-            .Columns(14).Width = 50
-            .Columns(15).Width = 50
-            .Columns(16).Width = 50
-        End With
-
-        For c As Integer = 0 To 16
-            If c = 1 OrElse c = 12 Then
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            ElseIf c = 5 OrElse c = 6 OrElse c = 7 Then
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            Else
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            End If
-        Next
     End Sub
 
     Private Sub btbTouroku_Click(sender As System.Object, e As System.EventArgs) Handles btbTouroku.Click
@@ -291,7 +294,9 @@ Public Class 在庫マスタ
             If YmdBox1.getADYmStr() = DataGridView1(17, row).Value AndAlso txtZaiko.Text = DataGridView1(0, row).Value Then
                 henkou()
 
-                Update()
+                DGV1Show(txtZaiko.Text)
+                Clear()
+                txtZaiko.Focus()
 
                 Exit Sub
             End If
@@ -299,7 +304,9 @@ Public Class 在庫マスタ
 
         tuika()
 
-        Update()
+        DGV1Show(txtZaiko.Text)
+        Clear()
+        txtZaiko.Focus()
 
     End Sub
 
@@ -318,7 +325,6 @@ Public Class 在庫マスタ
 
             cnn.Close()
 
-            FormUpdate()
             Exit Sub
 
         End If
@@ -381,7 +387,6 @@ Public Class 在庫マスタ
 
         cnn.Close()
 
-        FormUpdate()
     End Sub
 
     Private Sub btnSakujo_Click(sender As System.Object, e As System.EventArgs) Handles btnSakujo.Click
@@ -404,7 +409,11 @@ Public Class 在庫マスタ
                     cnn.Execute(SQL)
                     cnn.Close()
 
-                    FormUpdate()
+                    Clear()
+
+                    DGV1Show()
+
+                    txtZaiko.Focus()
                     Exit Sub
 
                 End If
@@ -432,7 +441,11 @@ Public Class 在庫マスタ
             cnn.Execute(SQL)
             cnn.Close()
 
-            FormUpdate()
+            Clear()
+
+            DGV1Show()
+
+            txtZaiko.Focus()
             Exit Sub
 
         End If
@@ -651,7 +664,11 @@ Public Class 在庫マスタ
             cnn.Close()
         End If
 
-        FormUpdate()
+        Clear()
+
+        DGV1Show()
+
+        txtZaiko.Focus()
 
     End Sub
 End Class

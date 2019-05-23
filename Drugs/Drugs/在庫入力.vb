@@ -19,7 +19,7 @@ Public Class 在庫入力
 
     Private Sub 在庫入力_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
         Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
-        
+
         If e.KeyCode = Keys.Enter Then
             If txtZaiko.Focused = True Then
                 For i As Integer = 0 To DGV1rowcount - 1
@@ -994,4 +994,12 @@ Public Class 在庫入力
             Next
         End If
     End Sub
+
+    Private Sub txtSuuryou_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles txtSuuryou.KeyDown
+        If e.KeyCode = Keys.Up Then
+            txtZaiko.Focus()
+        End If
+    End Sub
+
+    
 End Class

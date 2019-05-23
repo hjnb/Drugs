@@ -75,10 +75,10 @@ Partial Class 在庫マスタ
         '
         Me.YmdBox1.boxType = 6
         Me.YmdBox1.DateText = ""
-        Me.YmdBox1.EraLabelText = "H31"
+        Me.YmdBox1.EraLabelText = "R01"
         Me.YmdBox1.EraText = ""
         Me.YmdBox1.Location = New System.Drawing.Point(28, 21)
-        Me.YmdBox1.MonthLabelText = "04"
+        Me.YmdBox1.MonthLabelText = "05"
         Me.YmdBox1.MonthText = ""
         Me.YmdBox1.Name = "YmdBox1"
         Me.YmdBox1.Size = New System.Drawing.Size(85, 34)
@@ -409,6 +409,7 @@ Partial Class 在庫マスタ
         Me.DataGridView1.Location = New System.Drawing.Point(37, 238)
         Me.DataGridView1.MultiSelect = False
         Me.DataGridView1.Name = "DataGridView1"
+        Me.DataGridView1.ReadOnly = True
         Me.DataGridView1.RowTemplate.Height = 21
         Me.DataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.DataGridView1.Size = New System.Drawing.Size(838, 405)
