@@ -22,6 +22,7 @@ Partial Class 在庫入力
     'コード エディターを使って変更しないでください。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.YmdBox1 = New ymdBox.ymdBox()
@@ -42,6 +43,7 @@ Partial Class 在庫入力
         Me.DataGridView4 = New System.Windows.Forms.DataGridView()
         Me.DataGridView5 = New System.Windows.Forms.DataGridView()
         Me.DataGridView6 = New System.Windows.Forms.DataGridView()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView3, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -303,4 +305,5 @@ Partial Class 在庫入力
     Friend WithEvents DataGridView4 As System.Windows.Forms.DataGridView
     Friend WithEvents DataGridView5 As System.Windows.Forms.DataGridView
     Friend WithEvents DataGridView6 As System.Windows.Forms.DataGridView
+    Friend WithEvents Timer1 As System.Windows.Forms.Timer
 End Class

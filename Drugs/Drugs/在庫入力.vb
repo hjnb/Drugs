@@ -4,6 +4,7 @@ Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Core
 
 Public Class 在庫入力
+    Private y As Integer = 0
 
     Private Sub 在庫入力_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
@@ -26,6 +27,13 @@ Public Class 在庫入力
                     If txtZaiko.Text = DataGridView1(1, i).Value Then
                         lblNam.Text = DataGridView1(0, i).Value
                         lblNam.Visible = True
+                        If System.Text.RegularExpressions.Regex.IsMatch(DataGridView1(1, i).Value.ToString, txtZaiko.Text) = True Then
+                            '見つかった場合は、その行に移動します。
+                            DataGridView1.Rows(i).Selected = True
+                            DataGridView1.FirstDisplayedScrollingRowIndex = i
+                            '見つかった時点で繰り返し処理を中止します。
+                            y = i
+                        End If
                         If cmbBasyo.Text = "薬品庫" Then
                             txtSuuryou.Text = DataGridView1(3, i).Value
                             txtKome.Text = DataGridView1(12, i).Value
@@ -124,135 +132,7 @@ Public Class 在庫入力
 
     End Sub
 
-    Private Sub cmbBasyo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbBasyo.SelectedIndexChanged
-        Dim Ym As String = YmdBox1.getADYmStr()
-        Dim Cn As New OleDbConnection(TopForm.DB_Drugs)
-        Dim SQLCm As OleDbCommand = Cn.CreateCommand
-        Dim Adapter As New OleDbDataAdapter(SQLCm)
-        Dim Table As New DataTable
-
-        Dim basyo As String
-        If cmbBasyo.Text = "薬品庫" Then
-            basyo = "SokB"
-        ElseIf cmbBasyo.Text = "薬局" Then
-            basyo = "YakB"
-        ElseIf cmbBasyo.Text = "外来" Then
-            basyo = "GaiB"
-        ElseIf cmbBasyo.Text = "病棟" Then
-            basyo = "ByoB"
-        Else
-            basyo = cmbBasyo.Text
-        End If
-
-        SQLCm.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, SokS, YakS, GaiS, ByoS, ZaikoK, SokK, YakK, GaiK, ByoK, SokT, YakT, GaiT, ByoT, Ym, Tanka from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & " = 1 Order by Bunrui, Cod"
-        Adapter.Fill(Table)
-        DataGridView1.DataSource = Table
-
-        With DataGridView1
-            .RowHeadersWidth = 30
-            .Columns(0).Width = 375
-            .Columns(1).Width = 70
-            .Columns(2).Visible = False
-            .Columns(3).Width = 60
-            .Columns(4).Width = 60
-            .Columns(5).Width = 60
-            .Columns(6).Width = 60
-            .Columns(7).Visible = False
-            .Columns(8).Visible = False
-            .Columns(9).Visible = False
-            .Columns(10).Visible = False
-            .Columns(11).Visible = False
-            .Columns(12).Width = 300
-            .Columns(13).Width = 300
-            .Columns(14).Width = 300
-            .Columns(15).Width = 300
-            .Columns(16).Visible = False
-            .Columns(17).Visible = False
-            .Columns(3).HeaderText = "数量"
-            .Columns(4).HeaderText = "数量"
-            .Columns(5).HeaderText = "数量"
-            .Columns(6).HeaderText = "数量"
-            .Columns(12).HeaderText = "ｺﾒﾝﾄ"
-            .Columns(13).HeaderText = "ｺﾒﾝﾄ"
-            .Columns(14).HeaderText = "ｺﾒﾝﾄ"
-            .Columns(15).HeaderText = "ｺﾒﾝﾄ"
-        End With
-
-        If cmbBasyo.Text = "薬品庫" Then
-            With DataGridView1
-                .Columns(3).Visible = True
-                .Columns(4).Visible = False
-                .Columns(5).Visible = False
-                .Columns(6).Visible = False
-                .Columns(12).Visible = True
-                .Columns(13).Visible = False
-                .Columns(14).Visible = False
-                .Columns(15).Visible = False
-            End With
-        ElseIf cmbBasyo.Text = "薬局" Then
-            With DataGridView1
-                .Columns(3).Visible = False
-                .Columns(4).Visible = True
-                .Columns(5).Visible = False
-                .Columns(6).Visible = False
-                .Columns(12).Visible = False
-                .Columns(13).Visible = True
-                .Columns(14).Visible = False
-                .Columns(15).Visible = False
-            End With
-        ElseIf cmbBasyo.Text = "外来" Then
-            With DataGridView1
-                .Columns(3).Visible = False
-                .Columns(4).Visible = False
-                .Columns(5).Visible = True
-                .Columns(6).Visible = False
-                .Columns(12).Visible = False
-                .Columns(13).Visible = False
-                .Columns(14).Visible = True
-                .Columns(15).Visible = False
-            End With
-        ElseIf cmbBasyo.Text = "病棟" Then
-            With DataGridView1
-                .Columns(3).Visible = False
-                .Columns(4).Visible = False
-                .Columns(5).Visible = False
-                .Columns(6).Visible = True
-                .Columns(12).Visible = False
-                .Columns(13).Visible = False
-                .Columns(14).Visible = False
-                .Columns(15).Visible = True
-            End With
-        Else
-            With DataGridView1
-                .Columns(3).Visible = True
-                .Columns(4).Visible = False
-                .Columns(5).Visible = False
-                .Columns(6).Visible = False
-                .Columns(12).Visible = True
-                .Columns(13).Visible = False
-                .Columns(14).Visible = False
-                .Columns(15).Visible = False
-            End With
-        End If
-
-        For c As Integer = 0 To 16
-            If c = 0 OrElse c = 12 OrElse c = 13 OrElse c = 14 OrElse c = 15 Then
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            ElseIf c = 1 Then
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            ElseIf c = 3 OrElse c = 4 OrElse c = 5 OrElse c = 6 Then
-                DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-            End If
-        Next
-        
-    End Sub
-
-    Private Sub FormUpdate()
-        txtZaiko.Text = ""
-        lblNam.Text = ""
-        txtSuuryou.Text = ""
-        txtKome.Text = ""
-
+    Private Sub DGV1Show(Optional zaiko As Integer = 0)
         Dim Ym As String = YmdBox1.getADYmStr()
         Dim Cn As New OleDbConnection(TopForm.DB_Drugs)
         Dim SQLCm As OleDbCommand = Cn.CreateCommand
@@ -372,6 +252,29 @@ Public Class 在庫入力
                 DataGridView1.Columns(c).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
             End If
         Next
+
+        DataGridView1.FirstDisplayedScrollingRowIndex = y
+        Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
+        For r As Integer = 0 To DGV1rowcount - 1
+            If DataGridView1(1, r).Value = zaiko Then
+                DataGridView1.Rows(r).Selected = True
+            End If
+        Next
+    End Sub
+
+    Private Sub cmbBasyo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbBasyo.SelectedIndexChanged
+        DGV1Show()
+        
+    End Sub
+
+    Private Sub FormUpdate()
+        txtZaiko.Text = ""
+        lblNam.Text = ""
+        txtSuuryou.Text = ""
+        txtKome.Text = ""
+
+        DGV1Show()
+
     End Sub
 
     Private Sub btnTouroku_Click(sender As System.Object, e As System.EventArgs) Handles btnTouroku.Click
@@ -417,12 +320,20 @@ Public Class 在庫入力
                     Return
                 End If
 
-               
-
                 cnn.Execute(updateSQL)
                 cnn.Close()
 
-                FormUpdate()
+                Dim f As Form = New Form1()
+                f.Owner = Me
+                f.Show()
+                f.Close()
+
+                DGV1Show(txtZaiko.Text)
+
+                txtZaiko.Text = ""
+                lblNam.Text = ""
+                txtSuuryou.Text = ""
+                txtKome.Text = ""
 
                 txtZaiko.Focus()
 
