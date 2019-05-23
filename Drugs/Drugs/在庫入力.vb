@@ -85,8 +85,6 @@ Public Class 在庫入力
             txtSuuryou.Text = ""
         End If
 
-
-
     End Sub
 
     Private Sub DataGridView1_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles DataGridView1.CellFormatting
@@ -253,16 +251,21 @@ Public Class 在庫入力
             End If
         Next
 
-        DataGridView1.FirstDisplayedScrollingRowIndex = y
-        Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
-        For r As Integer = 0 To DGV1rowcount - 1
-            If DataGridView1(1, r).Value = zaiko Then
-                DataGridView1.Rows(r).Selected = True
-            End If
-        Next
+        If DataGridView1.FirstDisplayedScrollingRowIndex <> -1 Then
+            DataGridView1.FirstDisplayedScrollingRowIndex = y
+            Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
+            For r As Integer = 0 To DGV1rowcount - 1
+                If DataGridView1(1, r).Value = zaiko Then
+                    DataGridView1.Rows(r).Selected = True
+                End If
+            Next
+        End If
+
+        
     End Sub
 
     Private Sub cmbBasyo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbBasyo.SelectedIndexChanged
+        y = 0
         DGV1Show()
         
     End Sub
