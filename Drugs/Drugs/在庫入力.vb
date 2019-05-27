@@ -85,6 +85,8 @@ Public Class 在庫入力
             txtSuuryou.Text = ""
         End If
 
+        txtSuuryou.SelectionStart = txtSuuryou.TextLength
+        txtSuuryou.Focus()
     End Sub
 
     Private Sub DataGridView1_CellFormatting(sender As Object, e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles DataGridView1.CellFormatting

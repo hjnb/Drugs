@@ -271,6 +271,7 @@ Partial Class 在庫マスタ
         '
         'txtZaiko
         '
+        Me.txtZaiko.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtZaiko.Location = New System.Drawing.Point(207, 30)
         Me.txtZaiko.Name = "txtZaiko"
         Me.txtZaiko.Size = New System.Drawing.Size(72, 19)
@@ -312,6 +313,7 @@ Partial Class 在庫マスタ
         '
         'txtTani
         '
+        Me.txtTani.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtTani.Location = New System.Drawing.Point(337, 72)
         Me.txtTani.Name = "txtTani"
         Me.txtTani.Size = New System.Drawing.Size(49, 19)
@@ -319,6 +321,7 @@ Partial Class 在庫マスタ
         '
         'txtKonyu
         '
+        Me.txtKonyu.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtKonyu.Location = New System.Drawing.Point(495, 72)
         Me.txtKonyu.Name = "txtKonyu"
         Me.txtKonyu.Size = New System.Drawing.Size(61, 19)
@@ -326,6 +329,7 @@ Partial Class 在庫マスタ
         '
         'txtSokB
         '
+        Me.txtSokB.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtSokB.Location = New System.Drawing.Point(183, 166)
         Me.txtSokB.Name = "txtSokB"
         Me.txtSokB.Size = New System.Drawing.Size(26, 19)
@@ -334,6 +338,7 @@ Partial Class 在庫マスタ
         '
         'txtYakB
         '
+        Me.txtYakB.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtYakB.Location = New System.Drawing.Point(238, 166)
         Me.txtYakB.Name = "txtYakB"
         Me.txtYakB.Size = New System.Drawing.Size(26, 19)
@@ -342,6 +347,7 @@ Partial Class 在庫マスタ
         '
         'txtGaiB
         '
+        Me.txtGaiB.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtGaiB.Location = New System.Drawing.Point(293, 166)
         Me.txtGaiB.Name = "txtGaiB"
         Me.txtGaiB.Size = New System.Drawing.Size(26, 19)
@@ -350,6 +356,7 @@ Partial Class 在庫マスタ
         '
         'txtByoB
         '
+        Me.txtByoB.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtByoB.Location = New System.Drawing.Point(348, 166)
         Me.txtByoB.Name = "txtByoB"
         Me.txtByoB.Size = New System.Drawing.Size(26, 19)
