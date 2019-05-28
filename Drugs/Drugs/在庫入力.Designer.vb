@@ -98,6 +98,7 @@ Partial Class 在庫入力
         'txtZaiko
         '
         Me.txtZaiko.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.txtZaiko.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtZaiko.Location = New System.Drawing.Point(167, 82)
         Me.txtZaiko.Name = "txtZaiko"
         Me.txtZaiko.Size = New System.Drawing.Size(75, 23)
@@ -106,6 +107,7 @@ Partial Class 在庫入力
         'txtSuuryou
         '
         Me.txtSuuryou.Font = New System.Drawing.Font("MS UI Gothic", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.txtSuuryou.ImeMode = System.Windows.Forms.ImeMode.Disable
         Me.txtSuuryou.Location = New System.Drawing.Point(167, 114)
         Me.txtSuuryou.Name = "txtSuuryou"
         Me.txtSuuryou.Size = New System.Drawing.Size(75, 23)
