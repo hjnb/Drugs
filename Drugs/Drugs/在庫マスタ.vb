@@ -59,7 +59,10 @@ Public Class 在庫マスタ
             End If
         Next
 
-        DataGridView1.FirstDisplayedScrollingRowIndex = y
+        If DataGridView1.FirstDisplayedScrollingRowIndex <> -1 Then
+            DataGridView1.FirstDisplayedScrollingRowIndex = y
+        End If
+
     End Sub
 
     Private Sub 在庫マスタ_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
@@ -611,58 +614,69 @@ Public Class 在庫マスタ
         Adapter2.Fill(Table2)
         DataGridView2.DataSource = Table2
 
-        If DataGridView1.Rows.Count <> 0 Then
+        Dim cnn As New ADODB.Connection
+
+        If DataGridView1.Rows.Count <> 0 Then   '当月分のデータがある
             If MsgBox("当月分のデータがあります。上書きしてよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "コピー作業確認") = MsgBoxResult.No Then
+                Return
+            End If
+
+            cnn.Open(TopForm.DB_Drugs)
+
+            Dim SQL As String = ""
+
+            SQL = "DELETE FROM ZaikoM WHERE Ym = '" & YmdBox1.getADYmStr() & "'"
+
+            cnn.Execute(SQL)
+            cnn.Close()
+        Else    '当月分のデータがない
+            If MsgBox(YmdBox1.getADYmStr() & " に前月分のデータをコピーしてよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "コピー作業確認") = MsgBoxResult.No Then
                 Return
             End If
         End If
 
-        btnNenngetuSakujo.PerformClick()
+        'Dim cnn As New ADODB.Connection
+        Dim rs As New ADODB.Recordset
+        cnn.Open(TopForm.DB_Drugs)
 
-        If MsgBox(YmdBox1.getADYmStr() & " に前月分のデータをコピーしてよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "コピー作業確認") = MsgBoxResult.Yes Then
-            Dim cnn As New ADODB.Connection
-            Dim rs As New ADODB.Recordset
-            cnn.Open(TopForm.DB_Drugs)
+        rs.Open("ZaikoM", cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
 
-            rs.Open("ZaikoM", cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+        Dim dgv2rowcount As Integer = DataGridView2.Rows.Count
 
-            Dim dgv2rowcount As Integer = DataGridView2.Rows.Count
+        For i As Integer = 0 To dgv2rowcount - 1
+            rs.AddNew()
+            rs.Fields("Ym").Value = YmdBox1.getADYmStr()
+            rs.Fields("Zaiko").Value = Util.checkDBNullValue(DataGridView2(2, i).Value)
+            rs.Fields("Cod").Value = Util.checkDBNullValue(DataGridView2(3, i).Value)
+            rs.Fields("Nam").Value = Util.checkDBNullValue(DataGridView2(4, i).Value)
+            rs.Fields("Siire").Value = Util.checkDBNullValue(DataGridView2(5, i).Value)
+            rs.Fields("Bunrui").Value = Util.checkDBNullValue(DataGridView2(6, i).Value)
+            rs.Fields("SokB").Value = Util.checkDBNullValue(DataGridView2(7, i).Value)
+            rs.Fields("YakB").Value = Util.checkDBNullValue(DataGridView2(8, i).Value)
+            rs.Fields("GaiB").Value = Util.checkDBNullValue(DataGridView2(9, i).Value)
+            rs.Fields("ByoB").Value = Util.checkDBNullValue(DataGridView2(10, i).Value)
+            rs.Fields("Tani").Value = Util.checkDBNullValue(DataGridView2(11, i).Value)
+            rs.Fields("Konyu").Value = Util.checkDBNullValue(DataGridView2(12, i).Value)
+            rs.Fields("Tanka").Value = Util.checkDBNullValue(DataGridView2(13, i).Value)
+            rs.Fields("SokS").Value = "0"
+            rs.Fields("YakS").Value = "0"
+            rs.Fields("GaiS").Value = "0"
+            rs.Fields("ByoS").Value = "0"
+            rs.Fields("ZaikoK").Value = "0"
+            rs.Fields("SokK").Value = "0"
+            rs.Fields("YakK").Value = "0"
+            rs.Fields("GaiK").Value = "0"
+            rs.Fields("ByoK").Value = "0"
+            rs.Fields("Text").Value = Util.checkDBNullValue(DataGridView2(23, i).Value)
+            rs.Fields("Flag").Value = Util.checkDBNullValue(DataGridView2(24, i).Value)
+            rs.Fields("SokT").Value = ""
+            rs.Fields("YakT").Value = ""
+            rs.Fields("GaiT").Value = ""
+            rs.Fields("ByoT").Value = ""
+        Next
+        rs.Update()
 
-            For i As Integer = 0 To dgv2rowcount - 1
-                rs.AddNew()
-                rs.Fields("Ym").Value = YmdBox1.getADYmStr()
-                rs.Fields("Zaiko").Value = Util.checkDBNullValue(DataGridView2(2, i).Value)
-                rs.Fields("Cod").Value = Util.checkDBNullValue(DataGridView2(3, i).Value)
-                rs.Fields("Nam").Value = Util.checkDBNullValue(DataGridView2(4, i).Value)
-                rs.Fields("Siire").Value = Util.checkDBNullValue(DataGridView2(5, i).Value)
-                rs.Fields("Bunrui").Value = Util.checkDBNullValue(DataGridView2(6, i).Value)
-                rs.Fields("SokB").Value = Util.checkDBNullValue(DataGridView2(7, i).Value)
-                rs.Fields("YakB").Value = Util.checkDBNullValue(DataGridView2(8, i).Value)
-                rs.Fields("GaiB").Value = Util.checkDBNullValue(DataGridView2(9, i).Value)
-                rs.Fields("ByoB").Value = Util.checkDBNullValue(DataGridView2(10, i).Value)
-                rs.Fields("Tani").Value = Util.checkDBNullValue(DataGridView2(11, i).Value)
-                rs.Fields("Konyu").Value = Util.checkDBNullValue(DataGridView2(12, i).Value)
-                rs.Fields("Tanka").Value = Util.checkDBNullValue(DataGridView2(13, i).Value)
-                rs.Fields("SokS").Value = Util.checkDBNullValue(DataGridView2(14, i).Value)
-                rs.Fields("YakS").Value = Util.checkDBNullValue(DataGridView2(15, i).Value)
-                rs.Fields("GaiS").Value = Util.checkDBNullValue(DataGridView2(16, i).Value)
-                rs.Fields("ByoS").Value = Util.checkDBNullValue(DataGridView2(17, i).Value)
-                rs.Fields("ZaikoK").Value = Util.checkDBNullValue(DataGridView2(18, i).Value)
-                rs.Fields("SokK").Value = Util.checkDBNullValue(DataGridView2(19, i).Value)
-                rs.Fields("YakK").Value = Util.checkDBNullValue(DataGridView2(20, i).Value)
-                rs.Fields("GaiK").Value = Util.checkDBNullValue(DataGridView2(21, i).Value)
-                rs.Fields("ByoK").Value = Util.checkDBNullValue(DataGridView2(22, i).Value)
-                rs.Fields("Text").Value = Util.checkDBNullValue(DataGridView2(23, i).Value)
-                rs.Fields("Flag").Value = Util.checkDBNullValue(DataGridView2(24, i).Value)
-                rs.Fields("SokT").Value = Util.checkDBNullValue(DataGridView2(25, i).Value)
-                rs.Fields("YakT").Value = Util.checkDBNullValue(DataGridView2(26, i).Value)
-                rs.Fields("GaiT").Value = Util.checkDBNullValue(DataGridView2(27, i).Value)
-                rs.Fields("ByoT").Value = Util.checkDBNullValue(DataGridView2(28, i).Value)
-            Next
-            rs.Update()
-
-            cnn.Close()
-        End If
+        cnn.Close()
 
         Clear()
 
