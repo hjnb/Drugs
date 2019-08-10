@@ -75,10 +75,10 @@ Public Class 在庫入力
         ElseIf cmbBasyo.Text = "薬局" Then
             txtSuuryou.Text = DataGridView1(4, slctrow).FormattedValue
             txtKome.Text = DataGridView1(13, slctrow).Value
-        ElseIf cmbBasyo.Text = "病棟" Then
+        ElseIf cmbBasyo.Text = "外来" Then
             txtSuuryou.Text = DataGridView1(5, slctrow).FormattedValue
             txtKome.Text = DataGridView1(14, slctrow).Value
-        ElseIf cmbBasyo.Text = "外来" Then
+        ElseIf cmbBasyo.Text = "病棟" Then
             txtSuuryou.Text = DataGridView1(6, slctrow).FormattedValue
             txtKome.Text = DataGridView1(15, slctrow).Value
         Else
