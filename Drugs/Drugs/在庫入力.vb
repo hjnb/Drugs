@@ -335,7 +335,7 @@ Public Class 在庫入力
                 f.Show()
                 f.Close()
 
-                scrooly = DataGridView1.CurrentRow.Index
+                scrooly = DataGridView1.FirstDisplayedScrollingRowIndex
 
                 DGV1Show(txtZaiko.Text)
 
