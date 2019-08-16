@@ -59,11 +59,12 @@ Partial Class 在庫入力
         Me.YmdBox1.EraLabelText = "R01"
         Me.YmdBox1.EraText = ""
         Me.YmdBox1.Location = New System.Drawing.Point(37, 26)
-        Me.YmdBox1.MonthLabelText = "05"
+        Me.YmdBox1.MonthLabelText = "08"
         Me.YmdBox1.MonthText = ""
         Me.YmdBox1.Name = "YmdBox1"
         Me.YmdBox1.Size = New System.Drawing.Size(85, 34)
         Me.YmdBox1.TabIndex = 0
+        Me.YmdBox1.textReadOnly = False
         '
         'cmbBasyo
         '
@@ -177,7 +178,7 @@ Partial Class 在庫入力
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.ReadOnly = True
         Me.DataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DataGridView1.Size = New System.Drawing.Size(856, 491)
+        Me.DataGridView1.Size = New System.Drawing.Size(854, 506)
         Me.DataGridView1.TabIndex = 10
         '
         'lblNam
@@ -249,7 +250,7 @@ Partial Class 在庫入力
         Me.DataGridView6.AllowUserToDeleteRows = False
         Me.DataGridView6.AllowUserToResizeColumns = False
         Me.DataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView6.Location = New System.Drawing.Point(870, 192)
+        Me.DataGridView6.Location = New System.Drawing.Point(868, 192)
         Me.DataGridView6.Name = "DataGridView6"
         Me.DataGridView6.Size = New System.Drawing.Size(10, 10)
         Me.DataGridView6.TabIndex = 20

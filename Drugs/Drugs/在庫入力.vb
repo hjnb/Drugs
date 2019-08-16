@@ -4,7 +4,7 @@ Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Core
 
 Public Class 在庫入力
-    Private y As Integer = 0
+    Private scrooly As Integer = 0
 
     Private Sub 在庫入力_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
@@ -22,9 +22,9 @@ Public Class 在庫入力
         Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
 
         If e.KeyCode = Keys.Enter Then
-            If txtZaiko.Focused = True Then
+            If txtZaiko.Focused = True AndAlso txtZaiko.Text <> "" Then
                 For i As Integer = 0 To DGV1rowcount - 1
-                    If txtZaiko.Text = DataGridView1(1, i).Value Then
+                    If txtZaiko.Text = DataGridView1(1, i).Value.ToString() Then
                         lblNam.Text = DataGridView1(0, i).Value
                         lblNam.Visible = True
                         If System.Text.RegularExpressions.Regex.IsMatch(DataGridView1(1, i).Value.ToString, txtZaiko.Text) = True Then
@@ -32,7 +32,7 @@ Public Class 在庫入力
                             DataGridView1.Rows(i).Selected = True
                             DataGridView1.FirstDisplayedScrollingRowIndex = i
                             '見つかった時点で繰り返し処理を中止します。
-                            y = i
+                            scrooly = i
                         End If
                         If cmbBasyo.Text = "薬品庫" Then
                             txtSuuryou.Text = DataGridView1(3, i).Value
@@ -153,7 +153,7 @@ Public Class 在庫入力
             basyo = cmbBasyo.Text
         End If
 
-        SQLCm.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, SokS, YakS, GaiS, ByoS, ZaikoK, SokK, YakK, GaiK, ByoK, SokT, YakT, GaiT, ByoT, Ym, Tanka from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & " = 1 Order by Bunrui, Cod"
+        SQLCm.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, SokS, YakS, GaiS, ByoS, ZaikoK, SokK, YakK, GaiK, ByoK, SokT, YakT, GaiT, ByoT, Ym, Tanka from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & " = 1 Order by Bunrui, Cod, Nam"
         Adapter.Fill(Table)
         DataGridView1.DataSource = Table
 
@@ -255,7 +255,7 @@ Public Class 在庫入力
         Next
 
         If DataGridView1.FirstDisplayedScrollingRowIndex <> -1 Then
-            DataGridView1.FirstDisplayedScrollingRowIndex = y
+            DataGridView1.FirstDisplayedScrollingRowIndex = scrooly
             Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
             For r As Integer = 0 To DGV1rowcount - 1
                 If DataGridView1(1, r).Value = zaiko Then
@@ -264,13 +264,13 @@ Public Class 在庫入力
             Next
         End If
 
-        
+
     End Sub
 
     Private Sub cmbBasyo_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles cmbBasyo.SelectedIndexChanged
-        y = 0
+        scrooly = 0
         DGV1Show()
-        
+
     End Sub
 
     Private Sub FormUpdate()
@@ -334,6 +334,8 @@ Public Class 在庫入力
                 f.Owner = Me
                 f.Show()
                 f.Close()
+
+                scrooly = DataGridView1.CurrentRow.Index
 
                 DGV1Show(txtZaiko.Text)
 
@@ -677,7 +679,7 @@ Public Class 在庫入力
                 Dim SQLCm2 As OleDbCommand = Cn2.CreateCommand
                 Dim Adapter2 As New OleDbDataAdapter(SQLCm2)
                 Dim Table2 As New DataTable
-                SQLCm2.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '外用' Order by Cod"
+                SQLCm2.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '外用' Order by Cod, Nam"
                 Adapter2.Fill(Table2)
                 Dim dtb2rowcount As Integer = Table2.Rows.Count
                 If dtb2rowcount > 0 Then
@@ -698,7 +700,7 @@ Public Class 在庫入力
                 Dim SQLCm3 As OleDbCommand = Cn3.CreateCommand
                 Dim Adapter3 As New OleDbDataAdapter(SQLCm3)
                 Dim Table3 As New DataTable
-                SQLCm3.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '注射' Order by Cod"
+                SQLCm3.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '注射' Order by Cod, Nam"
                 Adapter3.Fill(Table3)
                 Dim dtb3rowcount As Integer = Table3.Rows.Count
                 If dtb3rowcount > 0 Then
@@ -718,7 +720,7 @@ Public Class 在庫入力
                 Dim SQLCm4 As OleDbCommand = Cn4.CreateCommand
                 Dim Adapter4 As New OleDbDataAdapter(SQLCm4)
                 Dim Table4 As New DataTable
-                SQLCm4.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '内服' Order by Cod"
+                SQLCm4.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui from ZaikoM WHERE Ym = '" & Ym & "' and " & basyo & "B = 1 and Bunrui = '内服' Order by Cod, Nam"
                 Adapter4.Fill(Table4)
                 Dim dtb4rowcount As Integer = Table4.Rows.Count
                 If dtb4rowcount > 0 Then
@@ -744,7 +746,7 @@ Public Class 在庫入力
                 Dim SQLCm5 As OleDbCommand = Cn5.CreateCommand
                 Dim Adapter5 As New OleDbDataAdapter(SQLCm5)
                 Dim Table5 As New DataTable
-                SQLCm5.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '外用' Order by Cod"
+                SQLCm5.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '外用' Order by Cod, Nam"
                 Adapter5.Fill(Table5)
                 Dim dtb5rowcount As Integer = Table5.Rows.Count
                 If dtb5rowcount Mod 22 <> 0 Then
@@ -762,7 +764,7 @@ Public Class 在庫入力
                 Dim SQLCm6 As OleDbCommand = Cn6.CreateCommand
                 Dim Adapter6 As New OleDbDataAdapter(SQLCm6)
                 Dim Table6 As New DataTable
-                SQLCm6.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '注射' Order by Cod"
+                SQLCm6.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '注射' Order by Cod, Nam"
                 Adapter6.Fill(Table6)
                 Dim dtb6rowcount As Integer = Table6.Rows.Count
                 If dtb6rowcount Mod 22 <> 0 Then
@@ -779,7 +781,7 @@ Public Class 在庫入力
                 Dim SQLCm7 As OleDbCommand = Cn4.CreateCommand
                 Dim Adapter7 As New OleDbDataAdapter(SQLCm7)
                 Dim Table7 As New DataTable
-                SQLCm7.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '内服' Order by Cod"
+                SQLCm7.CommandText = "select Nam as 品名, Zaiko as ｺｰﾄﾞ, Cod as カナ, Siire, Tani, Konyu, Tanka, SokS, YakS, GaiS, ByoS, ZaikoK, Ym, SokK, YakK, GaiK, ByoK, Bunrui, SokT, YakT, GaiT, ByoT from ZaikoM WHERE Ym = '" & YmdBox1.getPrevYm() & "' and " & basyo & "B = 1 and Bunrui = '内服' Order by Cod, Nam"
                 Adapter7.Fill(Table7)
                 Dim dtb7rowcount As Integer = Table7.Rows.Count
                 If dtb7rowcount Mod 22 <> 0 Then
