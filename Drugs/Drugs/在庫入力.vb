@@ -42,11 +42,11 @@ Public Class 在庫入力
                             txtSuuryou.Text = DataGridView1(4, i).Value
                             txtKome.Text = DataGridView1(13, i).Value
                             Exit For
-                        ElseIf cmbBasyo.Text = "病棟" Then
+                        ElseIf cmbBasyo.Text = "外来" Then
                             txtSuuryou.Text = DataGridView1(5, i).Value
                             txtKome.Text = DataGridView1(14, i).Value
                             Exit For
-                        ElseIf cmbBasyo.Text = "外来" Then
+                        ElseIf cmbBasyo.Text = "病棟" Then
                             txtSuuryou.Text = DataGridView1(6, i).Value
                             txtKome.Text = DataGridView1(15, i).Value
                             Exit For
@@ -159,22 +159,22 @@ Public Class 在庫入力
 
         With DataGridView1
             .RowHeadersWidth = 30
-            .Columns(0).Width = 375
-            .Columns(1).Width = 70
-            .Columns(2).Visible = False
-            .Columns(3).Width = 60
-            .Columns(4).Width = 60
-            .Columns(5).Width = 60
-            .Columns(6).Width = 60
-            .Columns(7).Visible = False
-            .Columns(8).Visible = False
-            .Columns(9).Visible = False
-            .Columns(10).Visible = False
-            .Columns(11).Visible = False
-            .Columns(12).Width = 300
-            .Columns(13).Width = 300
-            .Columns(14).Width = 300
-            .Columns(15).Width = 300
+            .Columns(0).Width = 375 'nam
+            .Columns(1).Width = 70  'zaiko
+            .Columns(2).Visible = False 'cod
+            .Columns(3).Width = 60  'soks
+            .Columns(4).Width = 60  'yaks
+            .Columns(5).Width = 60  'gais
+            .Columns(6).Width = 60  'byos
+            .Columns(7).Visible = False 'zaikoK
+            .Columns(8).Visible = False 'sokk
+            .Columns(9).Visible = False 'yakk 
+            .Columns(10).Visible = False 'gaik
+            .Columns(11).Visible = False    'byok
+            .Columns(12).Width = 300 'sokt
+            .Columns(13).Width = 300 'yakt 
+            .Columns(14).Width = 300 'gait
+            .Columns(15).Width = 300 'byot
             .Columns(16).Visible = False
             .Columns(17).Visible = False
             .Columns(3).HeaderText = "数量"
