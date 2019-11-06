@@ -78,11 +78,12 @@ Partial Class 在庫マスタ
         Me.YmdBox1.EraLabelText = "R01"
         Me.YmdBox1.EraText = ""
         Me.YmdBox1.Location = New System.Drawing.Point(28, 21)
-        Me.YmdBox1.MonthLabelText = "05"
+        Me.YmdBox1.MonthLabelText = "11"
         Me.YmdBox1.MonthText = ""
         Me.YmdBox1.Name = "YmdBox1"
         Me.YmdBox1.Size = New System.Drawing.Size(85, 34)
         Me.YmdBox1.TabIndex = 0
+        Me.YmdBox1.textReadOnly = False
         '
         'Label1
         '

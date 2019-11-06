@@ -3,7 +3,10 @@ Imports System.Runtime.InteropServices
 Imports Microsoft.Office.Interop
 Imports Microsoft.Office.Core
 Public Class 在庫マスタ
-    Private y As Integer = 0
+    Private scrooly As Integer = 0
+    Private dgvsort As DataGridViewColumn
+    Private a As Integer = 99
+
     Private Sub 在庫マスタ_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.WindowState = FormWindowState.Maximized
         YmdBox1.setADStr(Today.ToString("yyyy/MM/dd"))
@@ -59,8 +62,20 @@ Public Class 在庫マスタ
             End If
         Next
 
+        If a = 99 Then
+
+        Else
+            DataGridView1.Sort(DataGridView1.Columns(a), System.ComponentModel.ListSortDirection.Ascending)
+        End If
+
         If DataGridView1.FirstDisplayedScrollingRowIndex <> -1 Then
-            DataGridView1.FirstDisplayedScrollingRowIndex = y
+            DataGridView1.FirstDisplayedScrollingRowIndex = scrooly
+            Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
+            For r As Integer = 0 To DGV1rowcount - 1
+                If DataGridView1(0, r).Value = zaiko Then
+                    DataGridView1.Rows(r).Selected = True
+                End If
+            Next
         End If
 
     End Sub
@@ -95,7 +110,7 @@ Public Class 在庫マスタ
                             DataGridView1.Rows(r).Selected = True
                             DataGridView1.FirstDisplayedScrollingRowIndex = r
                             '見つかった時点で繰り返し処理を中止します。
-                            y = r
+                            scrooly = r
                         End If
 
                         find = True
@@ -292,6 +307,8 @@ Public Class 在庫マスタ
             txtByoB.Focus()
             Return
         End If
+
+        scrooly = DataGridView1.FirstDisplayedScrollingRowIndex
 
         For row As Integer = 0 To dgv1rowcount - 1
             If YmdBox1.getADYmStr() = DataGridView1(17, row).Value AndAlso txtZaiko.Text = DataGridView1(0, row).Value Then
@@ -684,5 +701,9 @@ Public Class 在庫マスタ
 
         txtZaiko.Focus()
 
+    End Sub
+
+    Private Sub DataGridView1_ColumnHeaderMouseClick(sender As Object, e As System.Windows.Forms.DataGridViewCellMouseEventArgs) Handles DataGridView1.ColumnHeaderMouseClick
+        a = DataGridView1.SortedColumn.Index
     End Sub
 End Class
