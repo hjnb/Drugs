@@ -9,7 +9,7 @@ Public Class 仕入データ入力
     Private Const SEARCH_TYPE_NAM As Integer = 2 '品名検索用
 
     '消費税率配列
-    Private taxArray() As String = {"0.05", "0.08", "0.10"}
+    Private taxArray() As String = {"0.00", "0.05", "0.08", "0.10"}
 
     'テキストボックスのマウスダウンイベント制御用
     Private mdFlag As Boolean = False
@@ -273,7 +273,7 @@ Public Class 仕入データ入力
     ''' 仕入データ表示
     ''' </summary>
     ''' <remarks></remarks>
-    Private Sub displayDgvSiire(ymd As String)
+    Private Sub displayDgvSiire(ymd As String, Optional changedFlg As Boolean = False)
         '入力テキストクリア
         codBox.Text = ""
         namBox.Text = ""
@@ -377,6 +377,11 @@ Public Class 仕入データ入力
 
         'カナボックスにフォーカス
         codBox.Focus()
+
+        If changedFlg AndAlso selectedRowIndex <> -1 Then
+            dgvSiire.FirstDisplayedScrollingRowIndex = selectedRowIndex
+            dgvSiire.Rows(selectedRowIndex).Selected = True
+        End If
 
         '選択行インデックス（保持用）を初期値に
         selectedRowIndex = -1
@@ -838,7 +843,7 @@ Public Class 仕入データ入力
             dgvSearch.Columns.Clear()
 
             '再表示
-            displayDgvSiire(ymd)
+            displayDgvSiire(ymd, True)
         Else
             rs.Close()
             cn.Close()
@@ -1303,7 +1308,6 @@ Public Class 仕入データ入力
                         dataList(i)(j, k) = ""
                     End If
                 Next
-
             Next
         Next
 
