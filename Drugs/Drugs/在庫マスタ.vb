@@ -334,19 +334,81 @@ Public Class 在庫マスタ
         Dim DGV1rowcount As Integer = DataGridView1.Rows.Count
 
         If MsgBox("変更してよろしいですか？", MsgBoxStyle.YesNo + vbExclamation, "登録確認") = MsgBoxResult.Yes Then
+            'Dim cnn As New ADODB.Connection
+            'cnn.Open(TopForm.DB_Drugs)
+
+            'Dim SQL As String = ""
+            'SQL = "DELETE FROM ZaikoM WHERE Zaiko = " & txtZaiko.Text & " AND Ym = '" & YmdBox1.getADYmStr() & "'"
+            'cnn.Execute(SQL)
+
+            'tuika()
+
+            'cnn.Close()
+
+            'Exit Sub
+
+
+            'とりあえず更新するかんじで
+            Dim sokb, yakb, gaib, byob, tani, konyu, sokS, yakS, gaiS, byoS, zaikoK, sokK, yakK, gaiK, byoK As Integer
+            Dim cod, nam, siire, bunrui, text As String
+            Dim tanka As Decimal
+            cod = txtCod.Text
+            nam = txtNam.Text
+            siire = cmbSiire.Text
+            bunrui = txtBunrui.Text
+            sokb = txtSokB.Text
+            yakb = txtYakB.Text
+            gaib = txtGaiB.Text
+            byob = txtByoB.Text
+            tani = txtTani.Text
+            konyu = txtKonyu.Text
+            tanka = lblTannka.Text
+            text = txtText.Text
+
             Dim cnn As New ADODB.Connection
             cnn.Open(TopForm.DB_Drugs)
+            Dim rs As New ADODB.Recordset
+            Dim sql As String = "select * from ZaikoM where Ym = '" & YmdBox1.getADYmStr() & "' and Zaiko = " & txtZaiko.Text
+            rs.Open(sql, cnn, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic)
+            If rs.RecordCount > 0 Then
+                rs.Fields("Cod").Value = cod
+                rs.Fields("Nam").Value = nam
+                rs.Fields("Siire").Value = siire
+                rs.Fields("Bunrui").Value = bunrui
+                rs.Fields("SokB").Value = sokb
+                rs.Fields("YakB").Value = yakb
+                rs.Fields("GaiB").Value = gaib
+                rs.Fields("ByoB").Value = byob
+                rs.Fields("Tani").Value = tani
+                rs.Fields("Konyu").Value = konyu
+                rs.Fields("Tanka").Value = tanka
+                rs.Fields("Text").Value = text
 
-            Dim SQL As String = ""
-            SQL = "DELETE FROM ZaikoM WHERE Zaiko = " & txtZaiko.Text & " AND Ym = '" & YmdBox1.getADYmStr() & "'"
-            cnn.Execute(SQL)
+                'ZaikoK,SokK,YakK,GaiK,ByoKの更新
+                'SokK = SokS * Tanka
+                sokS = rs.Fields("SokS").Value
+                sokK = Math.Round(sokS * tanka, 0, MidpointRounding.AwayFromZero)
+                rs.Fields("SokK").Value = sokK
+                'YakK = YakS * Tanka
+                yakS = rs.Fields("YakS").Value
+                yakK = Math.Round(yakS * tanka, 0, MidpointRounding.AwayFromZero)
+                rs.Fields("YakK").Value = yakK
+                'GaiK = GaiS * Tanka
+                gaiS = rs.Fields("GaiS").Value
+                gaiK = Math.Round(gaiS * tanka, 0, MidpointRounding.AwayFromZero)
+                rs.Fields("GaiK").Value = gaiK
+                'ByoK = ByoS * Tanka
+                byoS = rs.Fields("ByoS").Value
+                byoK = Math.Round(byoS * tanka, 0, MidpointRounding.AwayFromZero)
+                rs.Fields("ByoK").Value = byoK
+                'ZaikoK = SokK + YakK + GaiK + ByoK
+                zaikoK = sokK + yakK + gaiK + byoK
+                rs.Fields("ZaikoK").Value = zaikoK
 
-            tuika()
-
+                rs.Update()
+            End If
+            rs.Close()
             cnn.Close()
-
-            Exit Sub
-
         End If
     End Sub
 
